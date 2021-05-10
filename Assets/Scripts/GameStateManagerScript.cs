@@ -8,17 +8,29 @@ public class GameStateManagerScript : MonoBehaviour
 	[SerializeField] private GameObject whiteParent;
 	[SerializeField] private GameObject blackParent;
 	[SerializeField] private GameEvent newTurnEvent;
+	[SerializeField] private BoolRef isPlayersTurn;
+	[SerializeField] private GameEvent onGameEnded;
+	[SerializeField] private BoolRef isGameEnded;
+	[SerializeField] private float timeBeforeNextTurn = 2f;
+	[Header("Player Camera")]
+	[SerializeField] private Vector3 playerCameraPos;
+	[SerializeField] private Quaternion playerCameraRotation;
+	[Header("Opponent Camera")]
+	[SerializeField] private Vector3 opponentCameraPos;
+	[SerializeField] private Quaternion opponentCameraRotation;
 
 	private float minVelocity = 0.01f;
-	private Side turn = Side.player;
+	private bool isMoveDone = false;
+	private bool isProcessing = false;
 
 	private void Update()
 	{
-		if (!IsActivePhase())
-		{
-			turn = GetOpponent(turn);
+		CheckForNewTurn();
+	}
 
-		}
+	public void MoveIsDone()
+	{
+		isMoveDone = true;
 	}
 
 	private bool IsActivePhase()
@@ -42,9 +54,37 @@ public class GameStateManagerScript : MonoBehaviour
 		return false;
 	}
 
-	private Side GetOpponent(Side side)
+	private void CheckForNewTurn()
 	{
-		if (side == Side.player) return Side.opponent;
-		else return Side.player;
+		if (isMoveDone && !isProcessing && !IsActivePhase())
+		{
+			isProcessing = true;
+			StartCoroutine(ProcessNewEvent());
+		}
+	}
+	
+	private IEnumerator ProcessNewEvent()
+	{
+		yield return new WaitForSeconds(timeBeforeNextTurn);
+
+		isMoveDone = false;
+		Debug.Log($"bef invert {isPlayersTurn}");
+		isPlayersTurn.Variable.Invert();
+		Debug.Log($"aft invert {isPlayersTurn}");
+		if (isPlayersTurn.Value)
+		{
+			Debug.Log("PLAYER TURN");
+			Camera.main.transform.position = playerCameraPos;
+			Camera.main.transform.rotation = playerCameraRotation;
+		}
+		else
+		{
+			Debug.Log("OPPONENT TURN");
+			Camera.main.transform.position = opponentCameraPos;
+			Camera.main.transform.rotation = opponentCameraRotation;
+		}
+
+		newTurnEvent.Raise();
+		isProcessing = false;
 	}
 }

@@ -7,7 +7,18 @@ public class DraughtController : MonoBehaviour
 	[SerializeField] private FloatRef forceValue;
 	[SerializeField] GameEvent draughtDeathEvent;
 	[SerializeField] Material deactivatedMaterial;
+	public bool isActive = true;
 	private float destructionLevel = -10;
+
+	private void FixedUpdate()
+	{
+		if (transform.position.y <= destructionLevel)
+		{
+			gameObject.transform.parent = null;
+			Destroy(gameObject);
+			draughtDeathEvent.Raise();
+		}
+	}
 
 	public float ForceValue
 	{
@@ -19,13 +30,5 @@ public class DraughtController : MonoBehaviour
 		get { return deactivatedMaterial; }
 	}
 
-	private void FixedUpdate()
-	{
-		if (transform.position.y <= destructionLevel)
-		{
-			gameObject.transform.parent = null;
-			Destroy(gameObject);
-			draughtDeathEvent.Raise();
-		}
-	}
+
 }

@@ -5,11 +5,10 @@ using TMPro;
 
 public class UIScoreScript : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI whiteDraughtsText;
-    [SerializeField] private TextMeshProUGUI blackDraughtsText;
-    [SerializeField] IntRef whites;
-    [SerializeField] IntRef blacks;
-
+    [SerializeField] private TextMeshProUGUI playerDraughtsText;
+    [SerializeField] private TextMeshProUGUI opponentDraughtsText;
+    [SerializeField] IntRef playerDraughts;
+    [SerializeField] IntRef opponentDraughts;
 
 	private void Start()
 	{
@@ -18,7 +17,7 @@ public class UIScoreScript : MonoBehaviour
 
 	public void UpdateDraughtsTexts()
 	{
-        whiteDraughtsText.text = whites.Value.ToString();
-        blackDraughtsText.text = blacks.Value.ToString();
+        playerDraughtsText.text = playerDraughts.Value.ToString();
+        opponentDraughtsText.text = opponentDraughts.Value.ToString();
     }
 }
