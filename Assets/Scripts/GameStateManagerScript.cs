@@ -10,7 +10,6 @@ public class GameStateManagerScript : MonoBehaviour
 	[SerializeField] private GameEvent newTurnEvent;
 	[SerializeField] private BoolRef isPlayersTurn;
 	[SerializeField] private GameEvent onGameEnded;
-	[SerializeField] private BoolRef isGameEnded;
 	[SerializeField] private float timeBeforeNextTurn = 2f;
 	[Header("Player Camera")]
 	[SerializeField] private Vector3 playerCameraPos;
@@ -18,36 +17,40 @@ public class GameStateManagerScript : MonoBehaviour
 	[Header("Opponent Camera")]
 	[SerializeField] private Vector3 opponentCameraPos;
 	[SerializeField] private Quaternion opponentCameraRotation;
+	[SerializeField] private BoolRef isMoveDone;
 
 	private float minVelocity = 0.01f;
-	private bool isMoveDone = false;
 	private bool isProcessing = false;
+	private GameObject winner = null;
 
 	private void Update()
 	{
+		winner = GetWinner();
+		if (winner != null)
+		{
+			ProcessEndGame();
+		}
 		CheckForNewTurn();
-	}
-
-	public void MoveIsDone()
-	{
-		isMoveDone = true;
 	}
 
 	private bool IsActivePhase()
 	{
+		Rigidbody tempBody;
 		foreach (Transform draughtT in whiteParent.transform)
 		{
-			if (draughtT.gameObject.GetComponent<Rigidbody>().velocity.x > minVelocity
-				|| draughtT.gameObject.GetComponent<Rigidbody>().velocity.y > minVelocity
-				|| draughtT.gameObject.GetComponent<Rigidbody>().velocity.z > minVelocity)
+			tempBody = draughtT.gameObject.GetComponent<Rigidbody>();
+			if (tempBody.velocity.x > minVelocity
+				|| tempBody.velocity.y > minVelocity
+				|| tempBody.velocity.z > minVelocity)
 			{ return true; }
 		}
 
 		foreach (Transform draughtT in blackParent.transform)
 		{
-			if (draughtT.gameObject.GetComponent<Rigidbody>().velocity.x > minVelocity
-				|| draughtT.gameObject.GetComponent<Rigidbody>().velocity.y > minVelocity
-				|| draughtT.gameObject.GetComponent<Rigidbody>().velocity.z > minVelocity)
+			tempBody = draughtT.gameObject.GetComponent<Rigidbody>();
+			if (tempBody.velocity.x > minVelocity
+				|| tempBody.velocity.y > minVelocity
+				|| tempBody.velocity.z > minVelocity)
 			{ return true; }
 		}
 
@@ -67,10 +70,8 @@ public class GameStateManagerScript : MonoBehaviour
 	{
 		yield return new WaitForSeconds(timeBeforeNextTurn);
 
-		isMoveDone = false;
-		Debug.Log($"bef invert {isPlayersTurn}");
+		isMoveDone.Variable.SetValue(false);
 		isPlayersTurn.Variable.Invert();
-		Debug.Log($"aft invert {isPlayersTurn}");
 		if (isPlayersTurn.Value)
 		{
 			Debug.Log("PLAYER TURN");
@@ -86,5 +87,30 @@ public class GameStateManagerScript : MonoBehaviour
 
 		newTurnEvent.Raise();
 		isProcessing = false;
+	}
+
+	private GameObject GetWinner()
+	{
+		int playerCnt = 0,
+			opponentCnt = 0;
+		foreach (Transform draughtT in whiteParent.transform)
+		{
+			if (draughtT.gameObject.GetComponent<DraughtController>().isActive) ++playerCnt;
+		}
+
+		foreach (Transform draughtT in blackParent.transform)
+		{
+			if (draughtT.gameObject.GetComponent<DraughtController>().isActive) ++opponentCnt;
+		}
+
+		if (playerCnt == 0) return blackParent;
+		else if (opponentCnt == 0) return whiteParent;
+		else return null;
+	}
+
+	private void ProcessEndGame()
+	{
+		onGameEnded.Raise();
+		Debug.Log("GAME ENDED!!!!!");
 	}
 }

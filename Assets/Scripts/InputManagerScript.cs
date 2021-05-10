@@ -12,6 +12,10 @@ public class InputManagerScript : MonoBehaviour
 	[SerializeField] private GameObject draughtAnchor;
 	[SerializeField] private GameObject dirLineObj;
 	[SerializeField] private GameEvent MoveDoneEvent;
+	[SerializeField] private BoolRef isPLayerTurn;
+	[SerializeField] private BoolRef isMoveDone;
+	[SerializeField] private GameObject playerParent;
+	[SerializeField] private GameObject opponentParent;
 
 	private Camera mainCamera;
 	private Image anchorImg;
@@ -23,7 +27,6 @@ public class InputManagerScript : MonoBehaviour
 	private bool leftBtnPressed = false;
 	private LayerMask boardLayerMask;
 	private Plane boardPlane;
-	private List<GameObject> usedDraughts = new List<GameObject>();
 	private float randTorqueVal = 0.4f;
 
 	private void Start()
@@ -114,11 +117,10 @@ public class InputManagerScript : MonoBehaviour
 		leftBtnPressed = true;
 
 		GameObject draught = GetClickPosOnDraught();
-		if (draught != null && !usedDraughts.Contains(draught))
+		if (draught != null && !isMoveDone && IsDraughtAvailableInTurn(draught) 
+			&& draught.GetComponent<DraughtController>().isActive)
 		{
 			activeDraught = draught;
-			/*				dirLine = activeDraught.transform.GetChild(0).GetComponent<LineRenderer>();
-			*/
 			Vector3 dirLinePos = draught.transform.position;
 			dirLine.transform.position = dirLinePos;
 			anchorImg.enabled = true;
@@ -140,8 +142,9 @@ public class InputManagerScript : MonoBehaviour
 
 			Material newMaterial = activeDraught.GetComponent<DraughtController>().DeactivatedMaterial;
 			activeDraught.GetComponent<MeshRenderer>().material = newMaterial;
-			usedDraughts.Add(activeDraught);
+			activeDraught.GetComponent<DraughtController>().isActive = false;
 
+			isMoveDone.Variable.SetValue(true);
 			MoveDoneEvent.Raise();
 		}
 
@@ -173,9 +176,16 @@ public class InputManagerScript : MonoBehaviour
 
 	}
 	
-	private void CancelDrag()
+	public void CancelDrag()
 	{
 		leftBtnPressed = false;
 		ClearDraught();
+	}
+
+	private bool IsDraughtAvailableInTurn(GameObject draught)
+	{
+		Debug.Log($"{draught.transform.parent.name}");
+		return (isPLayerTurn.Value && draught.transform.parent.gameObject == playerParent)
+			|| (!isPLayerTurn.Value && draught.transform.parent.gameObject == opponentParent);
 	}
 }
