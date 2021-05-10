@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameStateManagerScript : MonoBehaviour
 {
-	public enum Side { player, opponent };
 	[SerializeField] private GameObject whiteParent;
 	[SerializeField] private GameObject blackParent;
 	[SerializeField] private GameEvent newTurnEvent;
@@ -20,17 +20,21 @@ public class GameStateManagerScript : MonoBehaviour
 	[SerializeField] private BoolRef isMoveDone;
 
 	private float minVelocity = 0.01f;
-	private bool isProcessing = false;
-	private GameObject winner = null;
+	private bool isProcessingTurn = false;
+	private bool isGameEnded = false;
+	public GameObject Winner { get; set; } = null;
 
 	private void Update()
 	{
-		winner = GetWinner();
-		if (winner != null)
+		(isGameEnded, Winner) = GetResults();
+		if (isGameEnded)
 		{
 			ProcessEndGame();
 		}
-		CheckForNewTurn();
+		else
+		{
+			CheckForNewTurn();
+		}
 	}
 
 	private bool IsActivePhase()
@@ -59,14 +63,14 @@ public class GameStateManagerScript : MonoBehaviour
 
 	private void CheckForNewTurn()
 	{
-		if (isMoveDone && !isProcessing && !IsActivePhase())
+		if (isMoveDone && !isProcessingTurn && !IsActivePhase())
 		{
-			isProcessing = true;
-			StartCoroutine(ProcessNewEvent());
+			isProcessingTurn = true;
+			StartCoroutine(ProcessNewTurnEvent());
 		}
 	}
 	
-	private IEnumerator ProcessNewEvent()
+	private IEnumerator ProcessNewTurnEvent()
 	{
 		yield return new WaitForSeconds(timeBeforeNextTurn);
 
@@ -86,26 +90,36 @@ public class GameStateManagerScript : MonoBehaviour
 		}
 
 		newTurnEvent.Raise();
-		isProcessing = false;
+		isProcessingTurn = false;
 	}
 
-	private GameObject GetWinner()
+	private Tuple<bool, GameObject> GetResults()
 	{
-		int playerCnt = 0,
-			opponentCnt = 0;
+		int playerAlive = 0,
+			playerDead = 0,
+			opponentAlive = 0,
+			opponentrDead = 0;
 		foreach (Transform draughtT in whiteParent.transform)
 		{
-			if (draughtT.gameObject.GetComponent<DraughtController>().isActive) ++playerCnt;
+			if (draughtT.gameObject.GetComponent<DraughtController>().isActive) ++playerAlive;
+			else ++playerDead;
 		}
 
 		foreach (Transform draughtT in blackParent.transform)
 		{
-			if (draughtT.gameObject.GetComponent<DraughtController>().isActive) ++opponentCnt;
+			if (draughtT.gameObject.GetComponent<DraughtController>().isActive) ++opponentAlive;
+			else ++opponentrDead;
 		}
-
-		if (playerCnt == 0) return blackParent;
-		else if (opponentCnt == 0) return whiteParent;
-		else return null;
+		
+		if (playerAlive + opponentAlive == 0)
+		{
+			if (playerDead > opponentrDead) return Tuple.Create(true, whiteParent);
+			else if (opponentrDead > playerDead) return Tuple.Create(true, blackParent);
+			else return Tuple.Create<bool, GameObject>(true, null);
+		}
+		else if (playerAlive == 0) return Tuple.Create(true, blackParent);
+		else if (opponentAlive == 0) return Tuple.Create(true, whiteParent);
+		else return Tuple.Create<bool, GameObject>(false, null);
 	}
 
 	private void ProcessEndGame()
