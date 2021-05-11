@@ -531,7 +531,7 @@ GameObject:
   - component: {fileID: 158055326}
   - component: {fileID: 158055327}
   m_Layer: 5
-  m_Name: YourTurnScreen
+  m_Name: NewTurnScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -797,7 +797,7 @@ GameObject:
   - component: {fileID: 193437143}
   - component: {fileID: 193437142}
   m_Layer: 5
-  m_Name: Winner
+  m_Name: Results
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1969,7 +1969,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: YOUR TURN
+  m_text: NEXT TURN
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4899,6 +4899,13 @@ MonoBehaviour:
     UseConstant: 0
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 1d1661f67fae1564b8847f640f5b152f, type: 2}
+  Winner:
+    UseConstant: 0
+    ConstantValue: 
+    Variable: {fileID: 11400000, guid: 0a7f79390f9e42c44be3de49d7ca6bd9, type: 2}
+  PlayerWinText: player WWwin!!!1
+  OpponentWinText: opponent krasava
+  DrawText: NICHYA!
 --- !u!4 &855157987 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 947448121175137328, guid: a2b7363512b25dc419b228e092e8478b, type: 3}
@@ -5153,7 +5160,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -7285,6 +7292,18 @@ MonoBehaviour:
   Response:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1462523482}
+        m_TargetAssemblyTypeName: UIEndGameScript, Assembly-CSharp
+        m_MethodName: UpdateWinnerText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 1462523483}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: SetTrigger
@@ -7309,6 +7328,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e4ca7df123dfd64bb489b62a6f76759, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resultsTextObj: {fileID: 0}
+  endText:
+    UseConstant: 0
+    ConstantValue: 
+    Variable: {fileID: 0}
 --- !u!95 &1462523483
 Animator:
   serializedVersion: 3

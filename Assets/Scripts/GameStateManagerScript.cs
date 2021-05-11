@@ -18,12 +18,15 @@ public class GameStateManagerScript : MonoBehaviour
 	[SerializeField] private Vector3 opponentCameraPos;
 	[SerializeField] private Quaternion opponentCameraRotation;
 	[SerializeField] private BoolRef isMoveDone;
+	[SerializeField] private StringRef ResultsText;
+	[SerializeField] private string PlayerWinText;
+	[SerializeField] private string OpponentWinText;
+	[SerializeField] private string DrawText;
 
 	private float minVelocity = 0.01f;
 	private bool isProcessingTurn = false;
 	private bool isGameEnded = false;
 	private bool isEndGameProcessed = false;
-	public GameObject Winner { get; set; } = null;
 
 	private void Update()
 	{
@@ -34,7 +37,7 @@ public class GameStateManagerScript : MonoBehaviour
 		}
 		else if (!isGameEnded)
 		{
-			(isGameEnded, Winner) = GetResults();
+			(isGameEnded, ResultsText.Variable.Value) = GetResults();
 			CheckForNewTurn();
 		}
 	}
@@ -95,7 +98,7 @@ public class GameStateManagerScript : MonoBehaviour
 		isProcessingTurn = false;
 	}
 
-	private Tuple<bool, GameObject> GetResults()
+	private Tuple<bool, string> GetResults()
 	{
 		int playerAlive = 0,
 			playerDead = 0,
@@ -115,13 +118,13 @@ public class GameStateManagerScript : MonoBehaviour
 		
 		if (playerAlive + opponentAlive == 0)
 		{
-			if (playerDead > opponentrDead) return Tuple.Create(true, whiteParent);
-			else if (opponentrDead > playerDead) return Tuple.Create(true, blackParent);
-			else return Tuple.Create<bool, GameObject>(true, null);
+			if (playerDead > opponentrDead) return Tuple.Create(true, PlayerWinText);
+			else if (opponentrDead > playerDead) return Tuple.Create(true, OpponentWinText);
+			else return Tuple.Create<bool, string>(true, null);
 		}
-		else if (playerAlive == 0) return Tuple.Create(true, blackParent);
-		else if (opponentAlive == 0) return Tuple.Create(true, whiteParent);
-		else return Tuple.Create<bool, GameObject>(false, null);
+		else if (playerAlive == 0) return Tuple.Create(true, PlayerWinText);
+		else if (opponentAlive == 0) return Tuple.Create(true, PlayerWinText);
+		else return Tuple.Create<bool, string>(false, DrawText);
 	}
 
 	private void ProcessEndGame()
