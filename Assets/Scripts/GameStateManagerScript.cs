@@ -30,6 +30,8 @@ public class GameStateManagerScript : MonoBehaviour
 
 	private void Update()
 	{
+		if (!isGameEnded) (isGameEnded, ResultsText.Variable.Value) = GetResults();
+
 		if (isGameEnded && !isEndGameProcessed)
 		{
 			ProcessEndGame();
@@ -37,7 +39,6 @@ public class GameStateManagerScript : MonoBehaviour
 		}
 		else if (!isGameEnded)
 		{
-			(isGameEnded, ResultsText.Variable.Value) = GetResults();
 			CheckForNewTurn();
 		}
 	}
