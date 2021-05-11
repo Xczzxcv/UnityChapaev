@@ -22,17 +22,19 @@ public class GameStateManagerScript : MonoBehaviour
 	private float minVelocity = 0.01f;
 	private bool isProcessingTurn = false;
 	private bool isGameEnded = false;
+	private bool isEndGameProcessed = false;
 	public GameObject Winner { get; set; } = null;
 
 	private void Update()
 	{
-		(isGameEnded, Winner) = GetResults();
-		if (isGameEnded)
+		if (isGameEnded && !isEndGameProcessed)
 		{
 			ProcessEndGame();
+			isEndGameProcessed = true;
 		}
-		else
+		else if (!isGameEnded)
 		{
+			(isGameEnded, Winner) = GetResults();
 			CheckForNewTurn();
 		}
 	}
@@ -124,7 +126,7 @@ public class GameStateManagerScript : MonoBehaviour
 
 	private void ProcessEndGame()
 	{
-		onGameEnded.Raise();
 		Debug.Log("GAME ENDED!!!!!");
+		onGameEnded.Raise();
 	}
 }

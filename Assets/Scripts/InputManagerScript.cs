@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class InputManagerScript : MonoBehaviour
 {
@@ -71,6 +72,8 @@ public class InputManagerScript : MonoBehaviour
 
 	private GameObject GetClickPosOnDraught()
 	{
+		if (EventSystem.current.IsPointerOverGameObject()) return null;
+
 		Ray clickRay = mainCamera.ScreenPointToRay(Input.mousePosition);
 		if (Physics.Raycast(clickRay, out RaycastHit hitDraught, mainCamera.transform.position.y * 10, draughtLayer))
 		{
@@ -184,7 +187,6 @@ public class InputManagerScript : MonoBehaviour
 
 	private bool IsDraughtAvailableInTurn(GameObject draught)
 	{
-		Debug.Log($"{draught.transform.parent.name}");
 		return (isPLayerTurn.Value && draught.transform.parent.gameObject == playerParent)
 			|| (!isPLayerTurn.Value && draught.transform.parent.gameObject == opponentParent);
 	}
