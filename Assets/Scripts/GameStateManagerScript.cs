@@ -17,63 +17,67 @@ public class GameStateManagerScript : MonoBehaviour
 	[Header("Opponent Camera")]
 	[SerializeField] private Vector3 opponentCameraPos;
 	[SerializeField] private Quaternion opponentCameraRotation;
+	[Space]
 	[SerializeField] private BoolRef isMoveDone;
 	[SerializeField] private StringRef ResultsText;
+	[Space]
 	[SerializeField] private string PlayerWinText;
 	[SerializeField] private string OpponentWinText;
 	[SerializeField] private string DrawText;
+	[Space]
+	[SerializeField] private FloatRef minVelocity;
 
-	private float minVelocity = 0.01f;
 	private bool isProcessingTurn = false;
 	private bool isGameEnded = false;
 	private bool isEndGameProcessed = false;
 
 	private void Update()
 	{
-		if (!isGameEnded) (isGameEnded, ResultsText.Variable.Value) = GetResults();
+		if (IsNewTurn())
+		{
+			if (!isGameEnded) (isGameEnded, ResultsText.Variable.Value) = GetResults();
 
-		if (isGameEnded && !isEndGameProcessed)
-		{
-			ProcessEndGame();
-			isEndGameProcessed = true;
-		}
-		else if (!isGameEnded)
-		{
-			CheckForNewTurn();
+			if (isGameEnded && !isEndGameProcessed)
+			{
+				ProcessEndGame();
+				isEndGameProcessed = true;
+			}
+			else if (!isGameEnded)
+			{
+				isProcessingTurn = true;
+				StartCoroutine(ProcessNewTurnEvent());
+			}
 		}
 	}
 
 	private bool IsActivePhase()
 	{
-		Rigidbody tempBody;
+		Vector3 tempVector;
+
 		foreach (Transform draughtT in whiteParent.transform)
 		{
-			tempBody = draughtT.gameObject.GetComponent<Rigidbody>();
-			if (tempBody.velocity.x > minVelocity
-				|| tempBody.velocity.y > minVelocity
-				|| tempBody.velocity.z > minVelocity)
+			tempVector = draughtT.GetComponent<Rigidbody>().velocity;
+			if (Mathf.Abs(tempVector.x) > minVelocity
+				|| Mathf.Abs(tempVector.y) > minVelocity
+				|| Mathf.Abs(tempVector.z) > minVelocity)
 			{ return true; }
 		}
 
 		foreach (Transform draughtT in blackParent.transform)
 		{
-			tempBody = draughtT.gameObject.GetComponent<Rigidbody>();
-			if (tempBody.velocity.x > minVelocity
-				|| tempBody.velocity.y > minVelocity
-				|| tempBody.velocity.z > minVelocity)
+			tempVector = draughtT.GetComponent<Rigidbody>().velocity;
+			if (Mathf.Abs(tempVector.x) > minVelocity
+				|| Mathf.Abs(tempVector.y) > minVelocity
+				|| Mathf.Abs(tempVector.z) > minVelocity)
 			{ return true; }
 		}
 
 		return false;
 	}
 
-	private void CheckForNewTurn()
+	private bool IsNewTurn()
 	{
-		if (isMoveDone && !isProcessingTurn && !IsActivePhase())
-		{
-			isProcessingTurn = true;
-			StartCoroutine(ProcessNewTurnEvent());
-		}
+		return isMoveDone && !isProcessingTurn && !IsActivePhase();
 	}
 	
 	private IEnumerator ProcessNewTurnEvent()
@@ -82,6 +86,9 @@ public class GameStateManagerScript : MonoBehaviour
 
 		isMoveDone.Variable.SetValue(false);
 		isPlayersTurn.Variable.Invert();
+
+		newTurnEvent.Raise();
+
 		if (isPlayersTurn.Value)
 		{
 			Debug.Log("PLAYER TURN");
@@ -95,7 +102,6 @@ public class GameStateManagerScript : MonoBehaviour
 			Camera.main.transform.rotation = opponentCameraRotation;
 		}
 
-		newTurnEvent.Raise();
 		isProcessingTurn = false;
 	}
 

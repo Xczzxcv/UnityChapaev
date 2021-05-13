@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class DraughtController : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class DraughtController : MonoBehaviour
 	[SerializeField] GameEvent draughtDeathEvent;
 	[SerializeField] Material deactivatedMaterial;
 	public bool isActive = true;
-	private float destructionLevel = -10;
+	private float destructionLevel = -15;
 
 	private void FixedUpdate()
 	{

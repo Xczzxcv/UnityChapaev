@@ -8,15 +8,20 @@ public class InputManagerScript : MonoBehaviour
 {
 	[SerializeField] private GameObject board;
 	[SerializeField] private LayerMask draughtLayer;
+	[Space]
 	[SerializeField] private float maxAnchorDistance;
 	[SerializeField] private float maxDirLineDistance;
+	[Space]
 	[SerializeField] private GameObject draughtAnchor;
 	[SerializeField] private GameObject dirLineObj;
-	[SerializeField] private GameEvent MoveDoneEvent;
+	[Space]
 	[SerializeField] private BoolRef isPLayerTurn;
 	[SerializeField] private BoolRef isMoveDone;
+	[Space]
 	[SerializeField] private GameObject playerParent;
 	[SerializeField] private GameObject opponentParent;
+	[Space]
+	[SerializeField] private FloatRef minActiveDraughtVelocity;
 
 	private Camera mainCamera;
 	private Image anchorImg;
@@ -29,6 +34,7 @@ public class InputManagerScript : MonoBehaviour
 	private LayerMask boardLayerMask;
 	private Plane boardPlane;
 	private float randTorqueVal = 0.4f;
+	private Rigidbody lastMovedDraughtRigidbody;
 
 	private void Start()
 	{
@@ -146,12 +152,20 @@ public class InputManagerScript : MonoBehaviour
 			Material newMaterial = activeDraught.GetComponent<DraughtController>().DeactivatedMaterial;
 			activeDraught.GetComponent<MeshRenderer>().material = newMaterial;
 			activeDraught.GetComponent<DraughtController>().isActive = false;
+			lastMovedDraughtRigidbody = activeDraught.GetComponent<Rigidbody>();
 
-			isMoveDone.Variable.SetValue(true);
-			MoveDoneEvent.Raise();
+			StartCoroutine(SetMoveDone());
 		}
 
 		ClearDraught();
+	}
+
+	IEnumerator SetMoveDone()
+	{
+		yield return new WaitUntil(
+			() => lastMovedDraughtRigidbody.velocity.magnitude > minActiveDraughtVelocity.Value
+		);
+		isMoveDone.Variable.SetValue(true);
 	}
 
 	private void SetupBoardPlane()
