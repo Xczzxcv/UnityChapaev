@@ -123,15 +123,18 @@ public class GameStateManagerScript : MonoBehaviour
 			else ++opponentrDead;
 		}
 		
-		if (playerAlive + opponentAlive == 0)
+		if (playerAlive + opponentAlive != 0)
 		{
-			if (playerDead > opponentrDead) return Tuple.Create(true, PlayerWinText);
-			else if (opponentrDead > playerDead) return Tuple.Create(true, OpponentWinText);
-			else return Tuple.Create<bool, string>(true, null);
+			if (playerAlive > opponentAlive) return Tuple.Create(true, PlayerWinText);
+			else if (opponentAlive > playerAlive) return Tuple.Create(true, PlayerWinText);
+
+			else if (playerAlive == 0) return Tuple.Create(true, OpponentWinText);
+			else if (opponentAlive == 0) return Tuple.Create(true, PlayerWinText);
+			else return Tuple.Create<bool, string>(false, null);
 		}
-		else if (playerAlive == 0) return Tuple.Create(true, PlayerWinText);
-		else if (opponentAlive == 0) return Tuple.Create(true, PlayerWinText);
-		else return Tuple.Create<bool, string>(false, DrawText);
+		if (playerDead > opponentrDead) return Tuple.Create(true, PlayerWinText);
+		else if (opponentrDead > playerDead) return Tuple.Create(true, OpponentWinText);
+		else return Tuple.Create(true, DrawText);
 	}
 
 	private void ProcessEndGame()
