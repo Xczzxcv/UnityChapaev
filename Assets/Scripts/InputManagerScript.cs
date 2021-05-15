@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class InputManagerScript : MonoBehaviour
 {
@@ -22,10 +24,27 @@ public class InputManagerScript : MonoBehaviour
 	[SerializeField] private GameObject opponentParent;
 	[Space]
 	[SerializeField] private FloatRef minActiveDraughtVelocity;
+	[Space]
+	[SerializeField] private string menuSceneName;
+	[Space]
+	private GameObject ad;
+	[SerializeField] private IntVar activeDraughtID;
+	public GameObject ActiveDraught
+	{
+		get
+		{
+			return ad;
+		}
+
+		private set
+		{
+			ad = value;
+			if (ad != null) activeDraughtID.Value = ad .GetInstanceID();
+		}
+	}
 
 	private Camera mainCamera;
 	private Image anchorImg;
-	private GameObject activeDraught = null;
 	private LineRenderer dirLine = null;
 	private Vector3 lastAnchorShiftNormWorld;
 	private float dirLineCoeff;
@@ -34,7 +53,7 @@ public class InputManagerScript : MonoBehaviour
 	private LayerMask boardLayerMask;
 	private Plane boardPlane;
 	private float randTorqueVal = 0.4f;
-	private Rigidbody lastMovedDraughtRigidbody;
+	private GameObject lastMovedDraught;
 
 	private void Start()
 	{
@@ -59,16 +78,21 @@ public class InputManagerScript : MonoBehaviour
 		{
 			DragAnchor();
 		}
-		else if (Input.GetMouseButtonUp(0) && activeDraught && leftBtnPressed)
+		else if (Input.GetMouseButtonUp(0) && ActiveDraught && leftBtnPressed)
 		{
 			FireDraught();
+		}
+		else if (Input.GetKey(KeyCode.Escape))
+		{
+			SceneManager.LoadScene(menuSceneName);
 		}
 	}
 
 	private void ClearDraught()
 	{
 		anchorImg.enabled = false;
-		activeDraught = null;
+		ActiveDraught = null;
+
 		if (dirLine != null)
 		{
 			dirLine.SetPosition(1, Vector3.zero);
@@ -100,14 +124,14 @@ public class InputManagerScript : MonoBehaviour
 
 	private void DragAnchor()
 	{
-		Vector3 draughtScrPos = mainCamera.WorldToScreenPoint(activeDraught.transform.position);
+		Vector3 draughtScrPos = mainCamera.WorldToScreenPoint(ActiveDraught.transform.position);
 		draughtScrPos.z = 0;
 		Vector3 clickBoardPos = GetClickPosOnBoard();
 		if (clickBoardPos == Vector3.zero) return;
-		clickBoardPos.y = activeDraught.transform.position.y;
+		clickBoardPos.y = ActiveDraught.transform.position.y;
 
 		Vector3 anchorShiftScreen = Input.mousePosition - draughtScrPos;
-		Vector3 anchorShiftWorld = clickBoardPos - activeDraught.transform.position;
+		Vector3 anchorShiftWorld = clickBoardPos - ActiveDraught.transform.position;
 
 		if (anchorShiftScreen.magnitude > maxAnchorDistance)
 		{
@@ -129,7 +153,7 @@ public class InputManagerScript : MonoBehaviour
 		if (draught != null && !isMoveDone && IsDraughtAvailableInTurn(draught) 
 			&& draught.GetComponent<DraughtController>().isActive)
 		{
-			activeDraught = draught;
+			ActiveDraught = draught;
 			Vector3 dirLinePos = draught.transform.position;
 			dirLine.transform.position = dirLinePos;
 			anchorImg.enabled = true;
@@ -143,16 +167,14 @@ public class InputManagerScript : MonoBehaviour
 		if (dirLineCoeff > dirLineCoeffMin)
 		{
 			Vector3 forceVector = -lastAnchorShiftNormWorld;
-			activeDraught.GetComponent<Rigidbody>().AddForce(
-				forceVector * activeDraught.GetComponent<DraughtController>().ForceValue * dirLineCoeff,
+			ActiveDraught.GetComponent<Rigidbody>().AddForce(
+				forceVector * ActiveDraught.GetComponent<DraughtController>().ForceValue * dirLineCoeff,
 				ForceMode.Impulse
 			);
-			activeDraught.GetComponent<Rigidbody>().AddTorque(Random.onUnitSphere * randTorqueVal, ForceMode.Impulse);
+			ActiveDraught.GetComponent<Rigidbody>().AddTorque(UnityEngine.Random.onUnitSphere * randTorqueVal, ForceMode.Impulse);
 
-			Material newMaterial = activeDraught.GetComponent<DraughtController>().DeactivatedMaterial;
-			activeDraught.GetComponent<MeshRenderer>().material = newMaterial;
-			activeDraught.GetComponent<DraughtController>().isActive = false;
-			lastMovedDraughtRigidbody = activeDraught.GetComponent<Rigidbody>();
+			ActiveDraught.GetComponent<DraughtController>().isActive = false;
+			lastMovedDraught = ActiveDraught;
 
 			StartCoroutine(SetMoveDone());
 		}
@@ -162,10 +184,15 @@ public class InputManagerScript : MonoBehaviour
 
 	IEnumerator SetMoveDone()
 	{
+		var lastMovedDraughtRigidbody = lastMovedDraught.GetComponent<Rigidbody>();
+		var lastMovedDraughtController = lastMovedDraught.GetComponent<DraughtController>();
+
 		yield return new WaitUntil(
 			() => lastMovedDraughtRigidbody.velocity.magnitude > minActiveDraughtVelocity.Value
 		);
 		isMoveDone.Variable.SetValue(true);
+		lastMovedDraughtController.CheckDraught(
+			lastMovedDraughtController.WaitUntilStopAndChangeMaterial);
 	}
 
 	private void SetupBoardPlane()
@@ -204,4 +231,10 @@ public class InputManagerScript : MonoBehaviour
 		return (isPLayerTurn.Value && draught.transform.parent.gameObject == playerParent)
 			|| (!isPLayerTurn.Value && draught.transform.parent.gameObject == opponentParent);
 	}
-}
+
+/*	private void SetActiveDraught(GameObject newObj)
+	{
+		activeDraught = newObj;
+		activeDraughtID.Value = activeDraught.GetInstanceID();
+	}
+*/}

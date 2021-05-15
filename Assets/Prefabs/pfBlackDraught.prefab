@@ -1604,3 +1604,11 @@ MonoBehaviour:
     Variable: {fileID: 11400000, guid: a6f882369e66e684d86319b1db6bed83, type: 2}
   draughtDeathEvent: {fileID: 11400000, guid: 2e0a389b57df9f949b867bee9d68cc07, type: 2}
   deactivatedMaterial: {fileID: 2100000, guid: 2ac9f6e559e046049aa9bc50f1f81126, type: 2}
+  minVelocity:
+    UseConstant: 0
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 76a10fad31881784c89cc50fd93fb63b, type: 2}
+  activeDraughtID:
+    UseConstant: 0
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: b715bede1db937147a0c7ba66ac11426, type: 2}

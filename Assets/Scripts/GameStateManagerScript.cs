@@ -26,6 +26,8 @@ public class GameStateManagerScript : MonoBehaviour
 	[SerializeField] private string DrawText;
 	[Space]
 	[SerializeField] private FloatRef minVelocity;
+	[Space]
+	[SerializeField] private BoolRef currentGameMode;
 
 	private bool isProcessingTurn = false;
 	private bool isGameEnded = false;
@@ -123,18 +125,16 @@ public class GameStateManagerScript : MonoBehaviour
 			else ++opponentrDead;
 		}
 		
-		if (playerAlive + opponentAlive != 0)
-		{
-			if (playerAlive > opponentAlive) return Tuple.Create(true, PlayerWinText);
-			else if (opponentAlive > playerAlive) return Tuple.Create(true, PlayerWinText);
+		if (playerAlive > 0 && opponentAlive > 0) return Tuple.Create<bool, string>(false, null);
 
-			else if (playerAlive == 0) return Tuple.Create(true, OpponentWinText);
-			else if (opponentAlive == 0) return Tuple.Create(true, PlayerWinText);
-			else return Tuple.Create<bool, string>(false, null);
+		if (playerAlive == 0) return Tuple.Create(true, OpponentWinText);
+		else if (opponentAlive == 0) return Tuple.Create(true, PlayerWinText);
+		else
+		{
+			if (playerDead > opponentrDead) return Tuple.Create(true, PlayerWinText);
+			else if (opponentrDead > playerDead) return Tuple.Create(true, OpponentWinText);
+			else return Tuple.Create(true, DrawText);
 		}
-		if (playerDead > opponentrDead) return Tuple.Create(true, PlayerWinText);
-		else if (opponentrDead > playerDead) return Tuple.Create(true, OpponentWinText);
-		else return Tuple.Create(true, DrawText);
 	}
 
 	private void ProcessEndGame()
