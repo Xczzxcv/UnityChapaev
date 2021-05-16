@@ -7,10 +7,15 @@ public class GameStateManagerScript : MonoBehaviour
 {
 	[SerializeField] private GameObject whiteParent;
 	[SerializeField] private GameObject blackParent;
-	[SerializeField] private GameEvent newTurnEvent;
-	[SerializeField] private BoolRef isPlayersTurn;
-	[SerializeField] private GameEvent onGameEnded;
+	[Space]
 	[SerializeField] private float timeBeforeNextTurn = 2f;
+	[SerializeField] private GameEvent onGameEnded;
+	[Space]
+	[SerializeField] private BoolRef isPlayersTurn;
+	[SerializeField] private GameEvent newTurnEvent;
+	[SerializeField] private IntRef playMode;
+	[SerializeField] private BoolVar isAIThinking;
+	[Space]
 	[Header("Player Camera")]
 	[SerializeField] private Vector3 playerCameraPos;
 	[SerializeField] private Quaternion playerCameraRotation;
@@ -26,8 +31,6 @@ public class GameStateManagerScript : MonoBehaviour
 	[SerializeField] private string DrawText;
 	[Space]
 	[SerializeField] private FloatRef minVelocity;
-	[Space]
-	[SerializeField] private BoolRef currentGameMode;
 
 	private bool isProcessingTurn = false;
 	private bool isGameEnded = false;
@@ -88,6 +91,9 @@ public class GameStateManagerScript : MonoBehaviour
 
 		isMoveDone.Variable.SetValue(false);
 		isPlayersTurn.Variable.Invert();
+
+		if (playMode.Value == 1 && !isPlayersTurn.Value ) isAIThinking.SetValue(true);
+		else isAIThinking.SetValue(false);
 
 		newTurnEvent.Raise();
 

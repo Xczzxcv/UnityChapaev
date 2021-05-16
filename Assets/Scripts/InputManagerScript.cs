@@ -19,11 +19,12 @@ public class InputManagerScript : MonoBehaviour
 	[Space]
 	[SerializeField] private BoolRef isPLayerTurn;
 	[SerializeField] private BoolRef isMoveDone;
+	[SerializeField] private BoolRef isAIThinking;
 	[Space]
 	[SerializeField] private GameObject playerParent;
 	[SerializeField] private GameObject opponentParent;
 	[Space]
-	[SerializeField] private FloatRef minActiveDraughtVelocity;
+	[SerializeField] private FireDraught fireDraughtScript;
 	[Space]
 	[SerializeField] private string menuSceneName;
 	[Space]
@@ -52,7 +53,6 @@ public class InputManagerScript : MonoBehaviour
 	private bool leftBtnPressed = false;
 	private LayerMask boardLayerMask;
 	private Plane boardPlane;
-	private float randTorqueVal = 0.4f;
 	private GameObject lastMovedDraught;
 
 	private void Start()
@@ -80,7 +80,7 @@ public class InputManagerScript : MonoBehaviour
 		}
 		else if (Input.GetMouseButtonUp(0) && ActiveDraught && leftBtnPressed)
 		{
-			FireDraught();
+			FireDraughtFunc();
 		}
 		else if (Input.GetKey(KeyCode.Escape))
 		{
@@ -150,7 +150,8 @@ public class InputManagerScript : MonoBehaviour
 		leftBtnPressed = true;
 
 		GameObject draught = GetClickPosOnDraught();
-		if (draught != null && !isMoveDone && IsDraughtAvailableInTurn(draught) 
+		if (draught != null && !isMoveDone && !isAIThinking 
+			&& IsDraughtAvailableInTurn(draught) 
 			&& draught.GetComponent<DraughtController>().isActive)
 		{
 			ActiveDraught = draught;
@@ -160,29 +161,31 @@ public class InputManagerScript : MonoBehaviour
 		}
 	}
 
-	private void FireDraught()
+	private void FireDraughtFunc()
 	{
 		leftBtnPressed = false;
 
 		if (dirLineCoeff > dirLineCoeffMin)
 		{
 			Vector3 forceVector = -lastAnchorShiftNormWorld;
-			ActiveDraught.GetComponent<Rigidbody>().AddForce(
+			fireDraughtScript.Fire(ActiveDraught, forceVector * dirLineCoeff, this);
+
+/*			ActiveDraught.GetComponent<Rigidbody>().AddForce(
 				forceVector * ActiveDraught.GetComponent<DraughtController>().ForceValue * dirLineCoeff,
 				ForceMode.Impulse
 			);
 			ActiveDraught.GetComponent<Rigidbody>().AddTorque(UnityEngine.Random.onUnitSphere * randTorqueVal, ForceMode.Impulse);
-
 			ActiveDraught.GetComponent<DraughtController>().isActive = false;
 			lastMovedDraught = ActiveDraught;
 
 			StartCoroutine(SetMoveDone());
+*/
 		}
 
 		ClearDraught();
 	}
 
-	IEnumerator SetMoveDone()
+/*	IEnumerator SetMoveDone()
 	{
 		var lastMovedDraughtRigidbody = lastMovedDraught.GetComponent<Rigidbody>();
 		var lastMovedDraughtController = lastMovedDraught.GetComponent<DraughtController>();
@@ -194,7 +197,7 @@ public class InputManagerScript : MonoBehaviour
 		lastMovedDraughtController.CheckDraught(
 			lastMovedDraughtController.WaitUntilStopAndChangeMaterial);
 	}
-
+*/
 	private void SetupBoardPlane()
 	{
 		Vector3 highPoint = board.transform.position;
