@@ -96,8 +96,7 @@ public class InputManagerScript : MonoBehaviour
 		if (dirLine != null)
 		{
 			dirLine.SetPosition(1, Vector3.zero);
-/*			dirLine = null;
-*/		}
+		}
 	}
 
 	private GameObject GetClickPosOnDraught()
@@ -168,36 +167,17 @@ public class InputManagerScript : MonoBehaviour
 		if (dirLineCoeff > dirLineCoeffMin)
 		{
 			Vector3 forceVector = -lastAnchorShiftNormWorld;
-			fireDraughtScript.Fire(ActiveDraught, forceVector * dirLineCoeff, this);
-
-/*			ActiveDraught.GetComponent<Rigidbody>().AddForce(
-				forceVector * ActiveDraught.GetComponent<DraughtController>().ForceValue * dirLineCoeff,
-				ForceMode.Impulse
-			);
-			ActiveDraught.GetComponent<Rigidbody>().AddTorque(UnityEngine.Random.onUnitSphere * randTorqueVal, ForceMode.Impulse);
-			ActiveDraught.GetComponent<DraughtController>().isActive = false;
-			lastMovedDraught = ActiveDraught;
-
-			StartCoroutine(SetMoveDone());
-*/
+			fireDraughtScript.Fire(
+				ActiveDraught, 
+				forceVector,
+				ActiveDraught.GetComponent<DraughtController>().ForceValue * dirLineCoeff, 
+				this
+				);
 		}
 
 		ClearDraught();
 	}
 
-/*	IEnumerator SetMoveDone()
-	{
-		var lastMovedDraughtRigidbody = lastMovedDraught.GetComponent<Rigidbody>();
-		var lastMovedDraughtController = lastMovedDraught.GetComponent<DraughtController>();
-
-		yield return new WaitUntil(
-			() => lastMovedDraughtRigidbody.velocity.magnitude > minActiveDraughtVelocity.Value
-		);
-		isMoveDone.Variable.SetValue(true);
-		lastMovedDraughtController.CheckDraught(
-			lastMovedDraughtController.WaitUntilStopAndChangeMaterial);
-	}
-*/
 	private void SetupBoardPlane()
 	{
 		Vector3 highPoint = board.transform.position;
@@ -235,9 +215,4 @@ public class InputManagerScript : MonoBehaviour
 			|| (!isPLayerTurn.Value && draught.transform.parent.gameObject == opponentParent);
 	}
 
-/*	private void SetActiveDraught(GameObject newObj)
-	{
-		activeDraught = newObj;
-		activeDraughtID.Value = activeDraught.GetInstanceID();
-	}
-*/}
+}
