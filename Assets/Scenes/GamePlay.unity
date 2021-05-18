@@ -379,7 +379,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 157.1}
+  m_AnchoredPosition: {x: 0, y: 20}
   m_SizeDelta: {x: 1100, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &193437142
@@ -402,7 +402,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: YOU WIN!!!!!1
+  m_text: 'oppoas dnuef '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -555,7 +555,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 2}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.2
+    widthMultiplier: 0.3
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -570,7 +570,7 @@ LineRenderer:
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 0.20356101
+        value: 0
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -1558,9 +1558,9 @@ MonoBehaviour:
     UseConstant: 0
     ConstantValue: 
     Variable: {fileID: 11400000, guid: 0a7f79390f9e42c44be3de49d7ca6bd9, type: 2}
-  PlayerWinText: player WWwin!!!1
-  OpponentWinText: opponent krasava
-  DrawText: NICHYA!
+  playerWinText: PLAYER WIN!!!!!1
+  opponentWinText: Opponent krASSAVA
+  drawText: VSE LOXI
   minVelocity:
     UseConstant: 0
     ConstantValue: 0
@@ -1912,7 +1912,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   maxAnchorDistance: 200
-  maxDirLineDistance: 2
+  maxDirLineDistance:
+    UseConstant: 0
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 63fa2b35ad2ffcd4fbbd925ca74c825c, type: 2}
   draughtAnchor: {fileID: 1418609421}
   dirLineObj: {fileID: 244805129}
   isPLayerTurn:
@@ -2220,7 +2223,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1409914732}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1462523482}
+        m_TargetAssemblyTypeName: UIEndGameScript, Assembly-CSharp
+        m_MethodName: RestartButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1409914732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2343,8 +2358,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1462523480}
-  - component: {fileID: 1462523481}
   - component: {fileID: 1462523482}
+  - component: {fileID: 1462523481}
+  - component: {fileID: 1462523484}
   - component: {fileID: 1462523483}
   m_Layer: 5
   m_Name: GameEndedScreen
@@ -2430,6 +2446,10 @@ MonoBehaviour:
     UseConstant: 0
     ConstantValue: 
     Variable: {fileID: 11400000, guid: 0a7f79390f9e42c44be3de49d7ca6bd9, type: 2}
+  playerDraughtsParent: {fileID: 671614759}
+  opponentDraughtsParent: {fileID: 683076532}
+  drSpawnerScript: {fileID: 1720835711}
+  restartButtonClickedEvent: {fileID: 11400000, guid: d82d6a16c6e6b8840bcc94c43f487b81, type: 2}
 --- !u!95 &1462523483
 Animator:
   serializedVersion: 3
@@ -2449,6 +2469,34 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1462523484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462523479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd163497bb487f42ad4a5a12a066a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: d82d6a16c6e6b8840bcc94c43f487b81, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1074610031}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1553458998
 GameObject:
   m_ObjectHideFlags: 0
@@ -2946,8 +2994,11 @@ MonoBehaviour:
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 5a3cb27b07ab0234f9f641d09c537ba0, type: 2}
   fireDraughtScript: {fileID: 11400000, guid: b47880dadc52bd74da021ce52bec5cfd, type: 2}
-  rangeAngle: 135
-  angleInc: 3
+  dirLineObj: {fileID: 244805129}
+  dirLineMaxLength:
+    UseConstant: 0
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 63fa2b35ad2ffcd4fbbd925ca74c825c, type: 2}
 --- !u!4 &1834287201
 Transform:
   m_ObjectHideFlags: 0

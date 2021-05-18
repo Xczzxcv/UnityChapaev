@@ -12,7 +12,7 @@ public class InputManagerScript : MonoBehaviour
 	[SerializeField] private LayerMask draughtLayer;
 	[Space]
 	[SerializeField] private float maxAnchorDistance;
-	[SerializeField] private float maxDirLineDistance;
+	[SerializeField] private FloatRef maxDirLineDistance;
 	[Space]
 	[SerializeField] private GameObject draughtAnchor;
 	[SerializeField] private GameObject dirLineObj;
@@ -60,6 +60,9 @@ public class InputManagerScript : MonoBehaviour
 		mainCamera = Camera.main;
 		anchorImg = draughtAnchor.GetComponent<Image>();
 		boardLayerMask = LayerMask.GetMask(LayerMask.LayerToName(board.layer));
+
+		dirLine = dirLineObj.GetComponent<LineRenderer>();
+		dirLine.SetPosition(1, Vector3.zero);
 
 		SetupBoardPlane();
 	}
@@ -141,6 +144,7 @@ public class InputManagerScript : MonoBehaviour
 		dirLineCoeff = Mathf.Min(anchorShiftScreen.magnitude / maxAnchorDistance, 1);
 		Vector3 dirLineEndPos = -anchorShiftWorld.normalized * dirLineCoeff * maxDirLineDistance;
 		dirLine.SetPosition(1, dirLineEndPos);
+		
 		lastAnchorShiftNormWorld = anchorShiftWorld.normalized;
 	}
 
@@ -153,6 +157,7 @@ public class InputManagerScript : MonoBehaviour
 			&& IsDraughtAvailableInTurn(draught) 
 			&& draught.GetComponent<DraughtController>().isActive)
 		{
+			Debug.Log("ClickDraught working");
 			ActiveDraught = draught;
 			Vector3 dirLinePos = draught.transform.position;
 			dirLine.transform.position = dirLinePos;
@@ -182,9 +187,6 @@ public class InputManagerScript : MonoBehaviour
 	{
 		Vector3 highPoint = board.transform.position;
 		highPoint.y = 10;
-
-		dirLine = dirLineObj.GetComponent<LineRenderer>();
-		dirLine.SetPosition(1, Vector3.zero);
 
 		Ray testRay = new Ray(highPoint, Vector3.down);
 

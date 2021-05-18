@@ -28,4 +28,9 @@ public class BoolRef
     {
         return reference.Value;
     }
+
+    public override string ToString()
+	{
+        return $"{typeof(BoolRef).Name}: {Value}"; 
+	}
 }

@@ -18,18 +18,30 @@ public class DraughtsSpawnerScript : MonoBehaviour
     [Space]
     [SerializeField] private GameEvent onDraughtsSpawned;
 
-    void Awake()
+    private void Awake()
     {
+        SpawnDraughts();
+    }
+
+    public void SpawnDraughts()
+	{
+        Debug.Log("call spawndr");
+        Debug.Log($"call spawndr {playerDummyParent.name} {opponentDummyParent.name}");
+        Debug.Log($"call spawndr {playerDraughtPrefab.name} {opponentDraughtPrefab.name}");
+        Debug.Log($"call spawndr {playerDraughtsParentT.name} {opponentDraughtsParentT.name}");
+        Debug.Log($"call spawndr {playerDraughtsQuantity.Value} {opponentDraughtsQuantity.Value}");
+        Debug.Log("end call info");
+
         foreach (Transform dummyT in playerDummyParent.transform)
-		{
+        {
             Instantiate(playerDraughtPrefab, dummyT.position, dummyT.rotation, playerDraughtsParentT);
             playerDraughtsQuantity.Variable.ApplyChange(1);
         }
         foreach (Transform dummyT in opponentDummyParent.transform)
-		{
+        {
             Instantiate(opponentDraughtPrefab, dummyT.position, dummyT.rotation, opponentDraughtsParentT);
             opponentDraughtsQuantity.Variable.ApplyChange(1);
-		}
+        }
 
         onDraughtsSpawned.Raise();
     }

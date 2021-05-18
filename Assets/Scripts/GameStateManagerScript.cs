@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using GameResult = System.Tuple<bool, string>;
 
 public class GameStateManagerScript : MonoBehaviour
 {
@@ -26,9 +27,9 @@ public class GameStateManagerScript : MonoBehaviour
 	[SerializeField] private BoolRef isMoveDone;
 	[SerializeField] private StringRef ResultsText;
 	[Space]
-	[SerializeField] private string PlayerWinText;
-	[SerializeField] private string OpponentWinText;
-	[SerializeField] private string DrawText;
+	[SerializeField] private string playerWinText;
+	[SerializeField] private string opponentWinText;
+	[SerializeField] private string drawText;
 	[Space]
 	[SerializeField] private FloatRef minVelocity;
 
@@ -36,12 +37,25 @@ public class GameStateManagerScript : MonoBehaviour
 	private bool isGameEnded = false;
 	private bool isEndGameProcessed = false;
 
+	private GameResult playerWinResult;
+	private GameResult opponentWinResult;
+	private GameResult drawResult;
+	private GameResult gameContinueResult;
+
+	private void Start()
+	{
+		playerWinResult = Tuple.Create(true, playerWinText);
+		drawResult = Tuple.Create<bool, string>(false, null);
+		opponentWinResult = Tuple.Create(true, opponentWinText);
+		gameContinueResult = Tuple.Create<bool, string>(false, null);
+	}
+
 	private void Update()
 	{
 		if (IsNewTurn())
 		{
 			if (!isGameEnded) (isGameEnded, ResultsText.Variable.Value) = GetResults();
-
+ 
 			if (isGameEnded && !isEndGameProcessed)
 			{
 				ProcessEndGame();
@@ -113,33 +127,54 @@ public class GameStateManagerScript : MonoBehaviour
 		isProcessingTurn = false;
 	}
 
-	private Tuple<bool, string> GetResults()
+	private GameResult GetResults()
 	{
+		// call happens before processing new turn, so 'isPlayerTurn' not changed yet
+
+		Debug.Log($"get results call {isPlayersTurn.Value}");
+
 		int playerAlive = 0,
-			playerDead = 0,
+			playerDeactivated = 0,
 			opponentAlive = 0,
-			opponentrDead = 0;
+			opponentrDeactivated = 0;
 		foreach (Transform draughtT in whiteParent.transform)
 		{
 			if (draughtT.gameObject.GetComponent<DraughtController>().isActive) ++playerAlive;
-			else ++playerDead;
+			else ++playerDeactivated;
 		}
 
 		foreach (Transform draughtT in blackParent.transform)
 		{
 			if (draughtT.gameObject.GetComponent<DraughtController>().isActive) ++opponentAlive;
-			else ++opponentrDead;
+			else ++opponentrDeactivated;
 		}
-		
-		if (playerAlive > 0 && opponentAlive > 0) return Tuple.Create<bool, string>(false, null);
 
-		if (playerAlive == 0) return Tuple.Create(true, OpponentWinText);
-		else if (opponentAlive == 0) return Tuple.Create(true, PlayerWinText);
+		Debug.Log($"Player: A {playerAlive} | D {playerDeactivated}");
+		Debug.Log($"Opponent: A {opponentAlive} | D {opponentrDeactivated}");
+		
+		if (playerAlive > 0 && opponentAlive > 0) return gameContinueResult;
+		else if (playerAlive == 0 && opponentAlive > 0)
+		{
+			if (!isPlayersTurn) return opponentWinResult;
+			else {
+				if (opponentAlive == 1) return gameContinueResult;
+				else return opponentWinResult;
+			} 
+		}
+		else if (opponentAlive == 0 && playerAlive > 0)
+		{
+			if (isPlayersTurn) return playerWinResult;
+			else
+			{
+				if (playerAlive == 1) return gameContinueResult;
+				else return playerWinResult;
+			}
+		}
 		else
 		{
-			if (playerDead > opponentrDead) return Tuple.Create(true, PlayerWinText);
-			else if (opponentrDead > playerDead) return Tuple.Create(true, OpponentWinText);
-			else return Tuple.Create(true, DrawText);
+			if (playerDeactivated > opponentrDeactivated) return playerWinResult;
+			else if (opponentrDeactivated > playerDeactivated) return opponentWinResult;
+			else return drawResult;
 		}
 	}
 

@@ -15,20 +15,24 @@ public class AIScript : MonoBehaviour
 	[Space]
 	[SerializeField] private BoolRef isAIThinking;
 	[SerializeField] private FireDraught fireDraughtScript;
+	[Space]
+	[SerializeField] private GameObject dirLineObj;
+	[SerializeField] private FloatRef dirLineMaxLength;
+	[Space]
+	[SerializeField] private Material firingAIMat;
 
 	private FireOption bestOption;
 	private List<FireOption> bestDraughtOptions;
 	private Vector3 playerSideCenter;
-	private Vector3 draughtForward;
 	private int draughtsPerRaw = 4;
 	private float maxRaycastRange;
 	private int draughtsQuantityBySide;
 	private RaycastHit[] raycastResults;
 	HashSet<RaycastHit> uniqueRaycastResults;
 	private Vector3 draughtSize;
-	private Vector3 boardCenter;
 	private LayerMask draughtMask;
 	private float draughtMaxForce;
+	private Material changedDraughtMat;
 
 	private void Start()
 	{
@@ -37,7 +41,6 @@ public class AIScript : MonoBehaviour
 		raycastResults = new RaycastHit[draughtsQuantityBySide];
 		uniqueRaycastResults = new HashSet<RaycastHit>();
 		bestDraughtOptions = new List<FireOption>();
-		boardCenter = (downLeftBorderCorner.position + upperRightBorderCorner.position) / 2;
 		
 		Transform draughtT = playerDraughtsParent.transform.GetChild(0);
 		draughtSize = draughtT.GetComponent<Collider>().bounds.size;
@@ -45,8 +48,6 @@ public class AIScript : MonoBehaviour
 		draughtMaxForce = draughtT.GetComponent<DraughtController>().ForceValue;
 
 		FireOption.RateFunc = RateOption;
-
-		CalculateForwardVector();
 
 		// find center of the opposite side to calculate neareast draughts
 		playerSideCenter = new Vector3(
@@ -78,23 +79,28 @@ public class AIScript : MonoBehaviour
 
 	private IEnumerator ActuallyFireDraughtAfterCondition()
 	{
+		var draughtMeshRenderer = bestOption.Draught.GetComponent<MeshRenderer>();
+		changedDraughtMat = draughtMeshRenderer.material;
+		draughtMeshRenderer.material = firingAIMat;
 		Debug.DrawLine(
 			bestOption.Draught.transform.position,
 			bestOption.Draught.transform.position 
 				+ bestOption.ForceDir * bestOption.ForceValue,
 			Color.red,
-			5
+			3
 			);
+
 		yield return new WaitForSeconds(3);
 
-		AssetDatabase.FindAssets("Destroyed");
-		var destrMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Destroyed.mat");
-		bestOption.Draught.GetComponent<MeshRenderer>().material = destrMat;
+		draughtMeshRenderer.material = changedDraughtMat;
+		dirLineObj.transform.position = bestOption.Draught.transform.position;
+		dirLineObj.GetComponent<LineRenderer>().SetPosition(1, bestOption.ForceDir * dirLineMaxLength * (bestOption.ForceValue / draughtMaxForce));
 
 		yield return new WaitForSeconds(1);
 
 		Debug.Log("FIRE!!");
 		fireDraughtScript.Fire(bestOption.Draught, bestOption.ForceDir, bestOption.ForceValue, this);
+		dirLineObj.GetComponent<LineRenderer>().SetPosition(1, Vector3.zero);
 	}
 
 	private int CompareByDistToOpponentSide(GameObject go1, GameObject go2)
@@ -144,22 +150,6 @@ public class AIScript : MonoBehaviour
 		}
 	}
 
-	private void CalculateForwardVector()
-	{
-		// calculate forward vector for some draught
-		// that vector will be the same for all draughts
-
-		GameObject draught = opponentDraughtsParent.transform.GetChild(0).gameObject;
-		var temp = downLeftBorderCorner.position;
-		temp.z += 1;
-		Vector3 normal = temp - downLeftBorderCorner.position;
-		var temp2 = downLeftBorderCorner.position;
-		temp2.y = draught.transform.position.y;
-		Plane oppositeSidePlane = new Plane(normal, temp2);
-		draughtForward = oppositeSidePlane.ClosestPointOnPlane(draught.transform.position) 
-			- draught.transform.position;
-	}
-
 	public int RateOption(GameObject draught, Vector3 force)
 	{
 		Ray testRay = new Ray(draught.transform.position, force);
@@ -168,12 +158,10 @@ public class AIScript : MonoBehaviour
 		uniqueRaycastResults.Clear();
 		for (int i = 0; i < hitedNum; ++i)
 		{
+			if (raycastResults[i].collider.gameObject
+				.transform.parent == opponentDraughtsParent) return -100;
 			uniqueRaycastResults.Add(raycastResults[i]);
 		}
-
-		float distToBoardCenter = Vector3.Distance(draught.transform.position, boardCenter);
-
-		int result = Mathf.RoundToInt(distToBoardCenter);
 
 		if (hitedNum > 2) return 0;
 		else if (hitedNum == 2) return 100;
