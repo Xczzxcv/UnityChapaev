@@ -114,15 +114,15 @@ public class GameStateManagerScript : MonoBehaviour
 		if (isPlayersTurn.Value)
 		{
 			Debug.Log("PLAYER TURN");
-			Camera.main.transform.position = playerCameraPos;
+/*			Camera.main.transform.position = playerCameraPos;
 			Camera.main.transform.rotation = playerCameraRotation;
-		}
+*/		}
 		else
 		{
 			Debug.Log("OPPONENT TURN");
-			Camera.main.transform.position = opponentCameraPos;
+/*			Camera.main.transform.position = opponentCameraPos;
 			Camera.main.transform.rotation = opponentCameraRotation;
-		}
+*/		}
 
 		isProcessingTurn = false;
 	}

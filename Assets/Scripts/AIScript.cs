@@ -20,6 +20,7 @@ public class AIScript : MonoBehaviour
 	[SerializeField] private FloatRef dirLineMaxLength;
 	[Space]
 	[SerializeField] private Material firingAIMat;
+	[SerializeField] IntVar activeDraughtID;
 
 	private FireOption bestOption;
 	private List<FireOption> bestDraughtOptions;
@@ -130,6 +131,7 @@ public class AIScript : MonoBehaviour
 		}
 
 		bestOption = bestOptions[UnityEngine.Random.Range(0, bestOptions.Count - 1)];
+		activeDraughtID.Value = bestOption.Draught.GetInstanceID();
 	}
 
 	private void GetBestDraughtOptions(GameObject draught)

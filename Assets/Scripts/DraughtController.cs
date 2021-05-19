@@ -11,10 +11,16 @@ public class DraughtController : MonoBehaviour
 	[SerializeField] Material deactivatedMaterial;
 	[SerializeField] private FloatRef minVelocity;
 	[SerializeField] IntRef activeDraughtID;
+	[SerializeField] GameObject background;
 	
 	[System.NonSerialized] public bool isActive = true;
 	private float destructionLevel = -15;
 	private IEnumerator checkingCoroutine;
+
+	private void Start()
+	{
+		destructionLevel = background.transform.position.y - gameObject.GetComponent<MeshCollider>().bounds.size.x;
+	}
 
 	private void FixedUpdate()
 	{
@@ -56,8 +62,9 @@ public class DraughtController : MonoBehaviour
 	}
 	public IEnumerator WaitUntilStopAndChangeMaterial()
 	{
+		var tempDraughtRb = GetComponent<Rigidbody>();
 		yield return new WaitUntil(
-			() => GetComponent<Rigidbody>().velocity.magnitude < minVelocity.Value);
+			() => tempDraughtRb.velocity.magnitude < minVelocity.Value);
 		SetDeactivatedMaterial();
 	}
 

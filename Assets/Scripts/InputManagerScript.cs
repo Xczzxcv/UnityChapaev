@@ -40,7 +40,7 @@ public class InputManagerScript : MonoBehaviour
 		private set
 		{
 			ad = value;
-			if (ad != null) activeDraughtID.Value = ad .GetInstanceID();
+			if (ad != null) activeDraughtID.Value = ad.GetInstanceID();
 		}
 	}
 

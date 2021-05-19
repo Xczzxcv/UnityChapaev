@@ -1612,3 +1612,4 @@ MonoBehaviour:
     UseConstant: 0
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: b715bede1db937147a0c7ba66ac11426, type: 2}
+  background: {fileID: 5723368147055059873, guid: 3e39333ad9ff0da40be4268d314f43d5, type: 3}
