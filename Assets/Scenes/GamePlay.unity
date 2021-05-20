@@ -257,7 +257,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 158055325}
+  - component: {fileID: 158055328}
   - component: {fileID: 158055326}
+  - component: {fileID: 158055329}
   - component: {fileID: 158055327}
   m_Layer: 5
   m_Name: NewTurnScreen
@@ -326,6 +328,18 @@ MonoBehaviour:
           m_StringArgument: NewTurnTrigger
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 158055328}
+        m_TargetAssemblyTypeName: NewTurnScript, Assembly-CSharp
+        m_MethodName: UpdateNewTurnText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!95 &158055327
 Animator:
   serializedVersion: 3
@@ -345,6 +359,83 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &158055328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158055324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6730742131cf4474a9942ade35a8fe12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NewTurnTextObj: {fileID: 314302193}
+  playerTurnTexts:
+  - player turn!
+  - now it's player
+  - haha your turn
+  opponentTurnTexts:
+  - opponent should think now
+  - second player or smth
+  - fire or die
+  isPlayerTurn:
+    UseConstant: 0
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 9a9af252115ff364a974700224b06030, type: 2}
+--- !u!114 &158055329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158055324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd163497bb487f42ad4a5a12a066a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 53acacc92e477824aad9ebd46a5efcc7, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 314302193}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_isUsingLegacyAnimationComponent
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 158055327}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: NewTurnTrigger
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 158055328}
+        m_TargetAssemblyTypeName: NewTurnScript, Assembly-CSharp
+        m_MethodName: UpdateNewTurnText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!1 &193437140
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,7 +912,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -839,8 +930,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 150
-  m_fontSizeBase: 150
+  m_fontSize: 130
+  m_fontSizeBase: 130
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -977,6 +1068,7 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420033}
   - component: {fileID: 519420034}
+  - component: {fileID: 519420035}
   - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
@@ -1006,7 +1098,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 5f97c0407e3b89749baaf3b02709c2c0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -1082,13 +1174,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCameraPos: {x: 0, y: 8.5, z: 1.4}
-  playerCameraRotation: {x: 0, y: 0, z: 0, w: 0}
+  playerCameraRotation: {x: -0.000000025383335, y: 0.81411546, z: -0.580703, w: -0.00000003558612}
   opponentCameraPos: {x: 0, y: 8.5, z: -5.74}
-  opponentCameraRotation: {x: 0, y: 0, z: 0, w: 0}
+  opponentCameraRotation: {x: 0.58070296, y: 0, z: 0, w: 0.8141155}
   isPlayerTurn:
     UseConstant: 0
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 9a9af252115ff364a974700224b06030, type: 2}
+  IsCameraToOpponentAnimOver: {fileID: 11400000, guid: 3504fe098416d874781e351cf4724ccb, type: 2}
   playerTurnTrigger: PlayerTurn
   opponentTurnTrigger: OpponentTurn
 --- !u!114 &519420034
@@ -1110,6 +1203,34 @@ MonoBehaviour:
       - m_Target: {fileID: 519420033}
         m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
         m_MethodName: MoveCameraForNextTurn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &519420035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd163497bb487f42ad4a5a12a066a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 53acacc92e477824aad9ebd46a5efcc7, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 519420033}
+        m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
+        m_MethodName: SetCameraForFirstTurn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1531,200 +1652,6 @@ MonoBehaviour:
     UseConstant: 0
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 82f74fb1c386ed84db5dd71df36b5014, type: 2}
---- !u!1 &810838829
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 810838830}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &810838830
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 810838829}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6, y: 1, z: 2.7}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 18
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &811627835
-Mesh:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh18574
-  serializedVersion: 10
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 36
-    topology: 0
-    baseVertex: 0
-    firstVertex: 0
-    vertexCount: 24
-    localAABB:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_BonesAABB: []
-  m_VariableBoneCountWeights:
-    m_Data: 
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexFormat: 0
-  m_IndexBuffer: 000001000200000002000300040005000600040006000700080009000a0008000a000b000c000d000e000c000e000f00100011001200100012001300140015001600140016001700
-  m_VertexData:
-    serializedVersion: 3
-    m_VertexCount: 24
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 24
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 40
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 1152
-    _typelessdata: 0000003f000000bf0000003f00000000000000000000803f000080bf0000000000000000000080bf000000b38e9596bf0000003f0000003f0000003f00000000000000000000803f000080bf0000000000000000000080bf000000b374ac34be000000bf0000003f0000003f00000000000000000000803f000080bf0000000000000000000080bf0000803f74ac34be000000bf000000bf0000003f00000000000000000000803f000080bf0000000000000000000080bf0000803f8e9596bf0000003f0000003f0000003f000000000000803f00000000000080bf0000000000000000000080bf00000000000000000000003f0000003f000000bf000000000000803f00000000000080bf0000000000000000000080bf000000000000803f000000bf0000003f000000bf000000000000803f00000000000080bf0000000000000000000080bf0000803f0000803f000000bf0000003f0000003f000000000000803f00000000000080bf0000000000000000000080bf0000803f000000000000003f0000003f000000bf0000000000000000000080bf000080bf0000000000000000000080bf7313863f0000c0b30000003f000000bf000000bf0000000000000000000080bf000080bf0000000000000000000080bf7313863ffeff7f3f000000bf000000bf000000bf0000000000000000000080bf000080bf0000000000000000000080bfba090340feff7f3f000000bf0000003f000000bf0000000000000000000080bf000080bf0000000000000000000080bfba0903400000c0b30000003f000000bf000000bf00000000000080bf00000000000080bf0000000000000000000080bf00000000000000000000003f000000bf0000003f00000000000080bf00000000000080bf0000000000000000000080bf000000000000803f000000bf000000bf0000003f00000000000080bf00000000000080bf0000000000000000000080bf0000803f0000803f000000bf000000bf000000bf00000000000080bf00000000000080bf0000000000000000000080bf0000803f00000000000000bf000000bf0000003f000080bf00000000000000000000000000000000000080bf000080bf9d2b8cbf000080b3000000bf0000003f0000003f000080bf00000000000000000000000000000000000080bf000080bf9d2b8cbffeff7f3f000000bf0000003f000000bf000080bf00000000000000000000000000000000000080bf000080bfc8b9c2bdfeff7f3f000000bf000000bf000000bf000080bf00000000000000000000000000000000000080bf000080bfc8b9c2bd000080b30000003f000000bf000000bf0000803f000000000000000000000000000000000000803f000080bf00008033c04d863f0000003f0000003f000000bf0000803f000000000000000000000000000000000000803f000080bf00008033e02603400000003f0000003f0000003f0000803f000000000000000000000000000000000000803f000080bf0000803fe02603400000003f000000bf0000003f0000803f000000000000000000000000000000000000803f000080bf0000803fc04d863f
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-  m_MeshUsageFlags: 0
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  m_MeshMetrics[0]: 1
-  m_MeshMetrics[1]: 1
-  m_MeshOptimizationFlags: 1
-  m_StreamData:
-    serializedVersion: 2
-    offset: 0
-    size: 0
-    path: 
 --- !u!1 &850728953
 GameObject:
   m_ObjectHideFlags: 0
@@ -1777,15 +1704,12 @@ MonoBehaviour:
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 9a9af252115ff364a974700224b06030, type: 2}
   newTurnEvent: {fileID: 11400000, guid: ba0d4741dd8a2764f922bdd47715a5c8, type: 2}
+  firstTurnEvent: {fileID: 11400000, guid: 53acacc92e477824aad9ebd46a5efcc7, type: 2}
   playMode:
     UseConstant: 0
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: c339832b779ef5d4c9c10e794873ba9a, type: 2}
   isAIThinking: {fileID: 11400000, guid: 5a3cb27b07ab0234f9f641d09c537ba0, type: 2}
-  playerCameraPos: {x: 0, y: 8.5, z: 1.4}
-  playerCameraRotation: {x: 0, y: -0.8141155, z: 0.58070296, w: 0}
-  opponentCameraPos: {x: 0, y: 8.5, z: -5.74}
-  opponentCameraRotation: {x: 0.58070296, y: 0, z: 0, w: 0.8141155}
   isMoveDone:
     UseConstant: 0
     ConstantValue: 0
@@ -1882,7 +1806,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 924249959}
-  m_Mesh: {fileID: 811627835}
+  m_Mesh: {fileID: 1161493449}
 --- !u!4 &924249963
 Transform:
   m_ObjectHideFlags: 0
@@ -2114,7 +2038,7 @@ MonoBehaviour:
     m_AreaError: 15
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
-  m_Mesh: {fileID: 811627835}
+  m_Mesh: {fileID: 1161493449}
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2292,6 +2216,170 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!43 &1161493449
+Mesh:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: pb_Mesh20304
+  serializedVersion: 10
+  m_SubMeshes:
+  - serializedVersion: 2
+    firstByte: 0
+    indexCount: 36
+    topology: 0
+    baseVertex: 0
+    firstVertex: 0
+    vertexCount: 24
+    localAABB:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+  m_Shapes:
+    vertices: []
+    shapes: []
+    channels: []
+    fullWeights: []
+  m_BindPose: []
+  m_BoneNameHashes: 
+  m_RootBoneNameHash: 0
+  m_BonesAABB: []
+  m_VariableBoneCountWeights:
+    m_Data: 
+  m_MeshCompression: 0
+  m_IsReadable: 1
+  m_KeepVertices: 1
+  m_KeepIndices: 1
+  m_IndexFormat: 0
+  m_IndexBuffer: 000001000200000002000300040005000600040006000700080009000a0008000a000b000c000d000e000c000e000f00100011001200100012001300140015001600140016001700
+  m_VertexData:
+    serializedVersion: 3
+    m_VertexCount: 24
+    m_Channels:
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 12
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 24
+      format: 0
+      dimension: 4
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 40
+      format: 0
+      dimension: 2
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    m_DataSize: 1152
+    _typelessdata: 0000003f000000bf0000003f00000000000000000000803f000080bf0000000000000000000080bf000000b38e9596bf0000003f0000003f0000003f00000000000000000000803f000080bf0000000000000000000080bf000000b374ac34be000000bf0000003f0000003f00000000000000000000803f000080bf0000000000000000000080bf0000803f74ac34be000000bf000000bf0000003f00000000000000000000803f000080bf0000000000000000000080bf0000803f8e9596bf0000003f0000003f0000003f000000000000803f00000000000080bf0000000000000000000080bf00000000000000000000003f0000003f000000bf000000000000803f00000000000080bf0000000000000000000080bf000000000000803f000000bf0000003f000000bf000000000000803f00000000000080bf0000000000000000000080bf0000803f0000803f000000bf0000003f0000003f000000000000803f00000000000080bf0000000000000000000080bf0000803f000000000000003f0000003f000000bf0000000000000000000080bf000080bf0000000000000000000080bf7313863f0000c0b30000003f000000bf000000bf0000000000000000000080bf000080bf0000000000000000000080bf7313863ffeff7f3f000000bf000000bf000000bf0000000000000000000080bf000080bf0000000000000000000080bfba090340feff7f3f000000bf0000003f000000bf0000000000000000000080bf000080bf0000000000000000000080bfba0903400000c0b30000003f000000bf000000bf00000000000080bf00000000000080bf0000000000000000000080bf00000000000000000000003f000000bf0000003f00000000000080bf00000000000080bf0000000000000000000080bf000000000000803f000000bf000000bf0000003f00000000000080bf00000000000080bf0000000000000000000080bf0000803f0000803f000000bf000000bf000000bf00000000000080bf00000000000080bf0000000000000000000080bf0000803f00000000000000bf000000bf0000003f000080bf00000000000000000000000000000000000080bf000080bf9d2b8cbf000080b3000000bf0000003f0000003f000080bf00000000000000000000000000000000000080bf000080bf9d2b8cbffeff7f3f000000bf0000003f000000bf000080bf00000000000000000000000000000000000080bf000080bfc8b9c2bdfeff7f3f000000bf000000bf000000bf000080bf00000000000000000000000000000000000080bf000080bfc8b9c2bd000080b30000003f000000bf000000bf0000803f000000000000000000000000000000000000803f000080bf00008033c04d863f0000003f0000003f000000bf0000803f000000000000000000000000000000000000803f000080bf00008033e02603400000003f0000003f0000003f0000803f000000000000000000000000000000000000803f000080bf0000803fe02603400000003f000000bf0000003f0000803f000000000000000000000000000000000000803f000080bf0000803fc04d863f
+  m_CompressedMesh:
+    m_Vertices:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UV:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Normals:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Tangents:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Weights:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_NormalSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_TangentSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_FloatColors:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_BoneIndices:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Triangles:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UVInfo: 0
+  m_LocalAABB:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+  m_MeshUsageFlags: 0
+  m_BakedConvexCollisionMesh: 
+  m_BakedTriangleCollisionMesh: 
+  m_MeshMetrics[0]: 1
+  m_MeshMetrics[1]: 1
+  m_MeshOptimizationFlags: 1
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 
 --- !u!1 &1197972776
 GameObject:
   m_ObjectHideFlags: 0
@@ -2375,7 +2463,7 @@ MonoBehaviour:
     Variable: {fileID: 11400000, guid: 63fa2b35ad2ffcd4fbbd925ca74c825c, type: 2}
   draughtAnchor: {fileID: 1418609421}
   dirLineObj: {fileID: 244805129}
-  isPLayerTurn:
+  isPlayerTurn:
     UseConstant: 0
     ConstantValue: 0
     Variable: {fileID: 11400000, guid: 9a9af252115ff364a974700224b06030, type: 2}
@@ -2817,7 +2905,6 @@ GameObject:
   - component: {fileID: 1462523480}
   - component: {fileID: 1462523482}
   - component: {fileID: 1462523481}
-  - component: {fileID: 1462523484}
   - component: {fileID: 1462523483}
   m_Layer: 5
   m_Name: GameEndedScreen
@@ -2906,7 +2993,10 @@ MonoBehaviour:
   playerDraughtsParent: {fileID: 671614759}
   opponentDraughtsParent: {fileID: 683076532}
   drSpawnerScript: {fileID: 1720835711}
-  restartButtonClickedEvent: {fileID: 11400000, guid: d82d6a16c6e6b8840bcc94c43f487b81, type: 2}
+  scoreObj: {fileID: 791945865}
+  initvarObj: {fileID: 2050864445}
+  gametateObj: {fileID: 850728955}
+  firstTurnEvent: {fileID: 11400000, guid: 53acacc92e477824aad9ebd46a5efcc7, type: 2}
 --- !u!95 &1462523483
 Animator:
   serializedVersion: 3
@@ -2926,34 +3016,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1462523484
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1462523479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebd163497bb487f42ad4a5a12a066a11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Event: {fileID: 11400000, guid: d82d6a16c6e6b8840bcc94c43f487b81, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1074610031}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &1553458998
 GameObject:
   m_ObjectHideFlags: 0
@@ -3385,8 +3447,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerDummyParent: {fileID: 1197972776}
   opponentDummyParent: {fileID: 88510976}
-  playerDraughtPrefab: {fileID: 947448121175137338, guid: 208d6207b715d2a498c0e7dacd54ec9c, type: 3}
-  opponentDraughtPrefab: {fileID: 947448121175137338, guid: a2b7363512b25dc419b228e092e8478b, type: 3}
+  whiteDraughtsPrefab: {fileID: 947448121175137338, guid: 208d6207b715d2a498c0e7dacd54ec9c, type: 3}
+  blackDraughtsPrefab: {fileID: 947448121175137338, guid: a2b7363512b25dc419b228e092e8478b, type: 3}
+  playerDraughtsColor:
+    UseConstant: 0
+    ConstantValue: 0
+    Variable: {fileID: 11400000, guid: 52563b0a6689adf4788a380fd28a5766, type: 2}
   playerDraughtsParentT: {fileID: 671614760}
   opponentDraughtsParentT: {fileID: 683076533}
   playerDraughtsQuantity:
@@ -3423,6 +3489,7 @@ GameObject:
   - component: {fileID: 1834287201}
   - component: {fileID: 1834287200}
   - component: {fileID: 1834287202}
+  - component: {fileID: 1834287203}
   m_Layer: 0
   m_Name: AIManager
   m_TagString: Untagged
@@ -3458,6 +3525,8 @@ MonoBehaviour:
     Variable: {fileID: 11400000, guid: 63fa2b35ad2ffcd4fbbd925ca74c825c, type: 2}
   firingAIMat: {fileID: 2100000, guid: 50f4eb0ee6f83c748bb732930f9d7b1d, type: 2}
   activeDraughtID: {fileID: 11400000, guid: b715bede1db937147a0c7ba66ac11426, type: 2}
+  IsCameraToOpponentAnimOver: {fileID: 11400000, guid: 3504fe098416d874781e351cf4724ccb, type: 2}
+  delayBeforeFire: 0.5
 --- !u!4 &1834287201
 Transform:
   m_ObjectHideFlags: 0
@@ -3485,6 +3554,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Event: {fileID: 11400000, guid: ba0d4741dd8a2764f922bdd47715a5c8, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1834287200}
+        m_TargetAssemblyTypeName: AIScript, Assembly-CSharp
+        m_MethodName: MakeMove
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1834287203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834287199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd163497bb487f42ad4a5a12a066a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Event: {fileID: 11400000, guid: 53acacc92e477824aad9ebd46a5efcc7, type: 2}
   Response:
     m_PersistentCalls:
       m_Calls:
@@ -3641,7 +3738,10 @@ MonoBehaviour:
   isMoveDone: {fileID: 11400000, guid: 1d1661f67fae1564b8847f640f5b152f, type: 2}
   isPlayerTurn: {fileID: 11400000, guid: 9a9af252115ff364a974700224b06030, type: 2}
   isAIThinking: {fileID: 11400000, guid: 5a3cb27b07ab0234f9f641d09c537ba0, type: 2}
+  IsCameraToOpponentAnimOver: {fileID: 11400000, guid: 3504fe098416d874781e351cf4724ccb, type: 2}
   activeDraughtID: {fileID: 11400000, guid: b715bede1db937147a0c7ba66ac11426, type: 2}
+  PlayMode: {fileID: 11400000, guid: c339832b779ef5d4c9c10e794873ba9a, type: 2}
+  playerDraughtsColorChoice: {fileID: 11400000, guid: 52563b0a6689adf4788a380fd28a5766, type: 2}
 --- !u!4 &2050864446
 Transform:
   m_ObjectHideFlags: 0

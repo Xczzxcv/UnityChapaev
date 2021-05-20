@@ -13,7 +13,10 @@ public class UIEndGameScript : MonoBehaviour
 	[SerializeField] private GameObject opponentDraughtsParent;
 	[Space]
 	[SerializeField] private DraughtsSpawnerScript drSpawnerScript;
-	[SerializeField] private GameEvent restartButtonClickedEvent;
+	[SerializeField] private UIScoreScript scoreObj;
+	[SerializeField] private InitVariables initvarObj;
+	[SerializeField] private GameStateManagerScript gametateObj;
+	[SerializeField] private GameEvent firstTurnEvent;
 	
 	public void UpdateWinnerText()
 	{
@@ -25,8 +28,7 @@ public class UIEndGameScript : MonoBehaviour
 		DestroyChildren(playerDraughtsParent);
 		DestroyChildren(opponentDraughtsParent);
 
-		drSpawnerScript.SpawnDraughts();
-		restartButtonClickedEvent.Raise();
+		StartCoroutine(RestartValues());
 	}
 
 	private void DestroyChildren(GameObject parent)
@@ -35,5 +37,20 @@ public class UIEndGameScript : MonoBehaviour
 		{
 			Destroy(childT.gameObject);
 		}
+	}
+
+	private IEnumerator RestartValues()
+	{
+		initvarObj.Initialize();
+
+		gametateObj.InitManager();
+		drSpawnerScript.SpawnDraughts();
+
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+
+		scoreObj.UpdateDraughtsTexts();
+
+		GetComponent<Animator>().SetTrigger("RestartGameTrigger");
 	}
 }

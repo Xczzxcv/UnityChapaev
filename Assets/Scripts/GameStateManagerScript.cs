@@ -14,15 +14,9 @@ public class GameStateManagerScript : MonoBehaviour
 	[Space]
 	[SerializeField] private BoolRef isPlayersTurn;
 	[SerializeField] private GameEvent newTurnEvent;
+	[SerializeField] private GameEvent firstTurnEvent;
 	[SerializeField] private IntRef playMode;
 	[SerializeField] private BoolVar isAIThinking;
-	[Space]
-	[Header("Player Camera")]
-	[SerializeField] private Vector3 playerCameraPos;
-	[SerializeField] private Quaternion playerCameraRotation;
-	[Header("Opponent Camera")]
-	[SerializeField] private Vector3 opponentCameraPos;
-	[SerializeField] private Quaternion opponentCameraRotation;
 	[Space]
 	[SerializeField] private BoolRef isMoveDone;
 	[SerializeField] private StringRef ResultsText;
@@ -33,9 +27,9 @@ public class GameStateManagerScript : MonoBehaviour
 	[Space]
 	[SerializeField] private FloatRef minVelocity;
 
-	private bool isProcessingTurn = false;
-	private bool isGameEnded = false;
-	private bool isEndGameProcessed = false;
+	private bool isProcessingTurn;
+	private bool isGameEnded;
+	private bool isEndGameProcessed;
 
 	private GameResult playerWinResult;
 	private GameResult opponentWinResult;
@@ -45,9 +39,11 @@ public class GameStateManagerScript : MonoBehaviour
 	private void Start()
 	{
 		playerWinResult = Tuple.Create(true, playerWinText);
-		drawResult = Tuple.Create<bool, string>(false, null);
+		drawResult = Tuple.Create<bool, string>(true, drawText);
 		opponentWinResult = Tuple.Create(true, opponentWinText);
 		gameContinueResult = Tuple.Create<bool, string>(false, null);
+
+		InitManager();
 	}
 
 	private void Update()
@@ -99,6 +95,12 @@ public class GameStateManagerScript : MonoBehaviour
 		return isMoveDone && !isProcessingTurn && !IsActivePhase();
 	}
 	
+	private void SetAIThinking()
+	{
+		if (playMode.Value == 1 && !isPlayersTurn.Value) isAIThinking.SetValue(true);
+		else isAIThinking.SetValue(false);
+	}
+
 	private IEnumerator ProcessNewTurnEvent()
 	{
 		yield return new WaitForSeconds(timeBeforeNextTurn);
@@ -106,23 +108,9 @@ public class GameStateManagerScript : MonoBehaviour
 		isMoveDone.Variable.SetValue(false);
 		isPlayersTurn.Variable.Invert();
 
-		if (playMode.Value == 1 && !isPlayersTurn.Value ) isAIThinking.SetValue(true);
-		else isAIThinking.SetValue(false);
+		SetAIThinking();
 
 		newTurnEvent.Raise();
-
-		if (isPlayersTurn.Value)
-		{
-			Debug.Log("PLAYER TURN");
-/*			Camera.main.transform.position = playerCameraPos;
-			Camera.main.transform.rotation = playerCameraRotation;
-*/		}
-		else
-		{
-			Debug.Log("OPPONENT TURN");
-/*			Camera.main.transform.position = opponentCameraPos;
-			Camera.main.transform.rotation = opponentCameraRotation;
-*/		}
 
 		isProcessingTurn = false;
 	}
@@ -182,5 +170,21 @@ public class GameStateManagerScript : MonoBehaviour
 	{
 		Debug.Log("GAME ENDED!!!!!");
 		onGameEnded.Raise();
+	}
+
+	public void InitManager()
+	{
+		isProcessingTurn = false;
+		isGameEnded = false;
+		isEndGameProcessed = false;
+
+	StartCoroutine(InitMngrCoroutine());
+	}
+
+	private IEnumerator InitMngrCoroutine()
+	{
+		SetAIThinking();
+		yield return new WaitForEndOfFrame();
+		firstTurnEvent.Raise();
 	}
 }

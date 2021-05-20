@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameScore : MonoBehaviour
+public class GameScoreManagerScript : MonoBehaviour
 {
 	[SerializeField] private GameObject whiteParent;
 	[SerializeField] private GameObject blackParent;
@@ -24,6 +24,12 @@ public class GameScore : MonoBehaviour
 
 	private void UpdateDraughtsNum()
 	{
+		StartCoroutine(UpdateDraughtsNumCoroutine());
+	}
+
+	private IEnumerator UpdateDraughtsNumCoroutine()
+	{
+		yield return new WaitForEndOfFrame();
 		whiteDraughts.Value = whiteParent.transform.childCount;
 		blackDraughts.Value = blackParent.transform.childCount;
 		scoreChangeEvent.Raise();

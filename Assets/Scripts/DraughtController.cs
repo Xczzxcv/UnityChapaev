@@ -22,6 +22,11 @@ public class DraughtController : MonoBehaviour
 		destructionLevel = background.transform.position.y - gameObject.GetComponent<MeshCollider>().bounds.size.x;
 	}
 
+	private void OnDestroy()
+	{
+		draughtDeathEvent.Raise();
+	}
+
 	private void FixedUpdate()
 	{
 		if (transform.position.y <= destructionLevel)
@@ -29,7 +34,6 @@ public class DraughtController : MonoBehaviour
 			gameObject.transform.parent = null;
 			if (checkingCoroutine != null) StopCoroutine(checkingCoroutine);
 			Destroy(gameObject);
-			draughtDeathEvent.Raise();
 		}
 	}
 

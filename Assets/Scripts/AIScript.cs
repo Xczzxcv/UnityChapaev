@@ -21,6 +21,9 @@ public class AIScript : MonoBehaviour
 	[Space]
 	[SerializeField] private Material firingAIMat;
 	[SerializeField] IntVar activeDraughtID;
+	[SerializeField] private BoolVar IsCameraToOpponentAnimOver;
+	[Header("AI Settings")]
+	[SerializeField] private float delayBeforeFire;
 
 	private FireOption bestOption;
 	private List<FireOption> bestDraughtOptions;
@@ -29,18 +32,17 @@ public class AIScript : MonoBehaviour
 	private float maxRaycastRange;
 	private int draughtsQuantityBySide;
 	private RaycastHit[] raycastResults;
-	HashSet<RaycastHit> uniqueRaycastResults;
 	private Vector3 draughtSize;
 	private LayerMask draughtMask;
 	private float draughtMaxForce;
 	private Material changedDraughtMat;
+	private int deactivatedTargetPenalty = 100;
 
 	private void Start()
 	{
 		maxRaycastRange = Mathf.Abs(downLeftBorderCorner.position.x - upperRightBorderCorner.position.x);
 		draughtsQuantityBySide = playerDraughtsParent.transform.childCount;
 		raycastResults = new RaycastHit[draughtsQuantityBySide];
-		uniqueRaycastResults = new HashSet<RaycastHit>();
 		bestDraughtOptions = new List<FireOption>();
 		
 		Transform draughtT = playerDraughtsParent.transform.GetChild(0);
@@ -60,9 +62,9 @@ public class AIScript : MonoBehaviour
 
 	public void MakeMove()
 	{
+		Debug.Log($"MakeMove call. is AI thinking: {isAIThinking.Value}");
 		if (!isAIThinking) return;
 
-		// find all alive draughts
 		var aliveDraughts = new List<GameObject>();
 		foreach (Transform draughtT in opponentDraughtsParent.transform)
 		{
@@ -71,33 +73,42 @@ public class AIScript : MonoBehaviour
 				aliveDraughts.Add(draughtT.gameObject);
 			}
 		}
+		if (aliveDraughts.Count == 0) return;
+
 		aliveDraughts.Sort(CompareByDistToOpponentSide);
 
-		SetBestAliveOption(aliveDraughts);
+		if (playerDraughtsParent.transform.childCount > 0) SetBestAliveOption(aliveDraughts);
+		else SetRandomOption(aliveDraughts);
 
 		StartCoroutine(ActuallyFireDraughtAfterCondition());
 	}
 
 	private IEnumerator ActuallyFireDraughtAfterCondition()
 	{
+		yield return new WaitUntil(() => IsCameraToOpponentAnimOver.Value);
+		yield return new WaitForSeconds(delayBeforeFire);
+
+		IsCameraToOpponentAnimOver.Value = false;
+
 		var draughtMeshRenderer = bestOption.Draught.GetComponent<MeshRenderer>();
 		changedDraughtMat = draughtMeshRenderer.material;
 		draughtMeshRenderer.material = firingAIMat;
-		Debug.DrawLine(
+/*		Debug.DrawLine(
 			bestOption.Draught.transform.position,
 			bestOption.Draught.transform.position 
 				+ bestOption.ForceDir * bestOption.ForceValue,
 			Color.red,
 			3
 			);
+*/
+		yield return new WaitForSeconds(1.5f);
 
-		yield return new WaitForSeconds(3);
-
-		draughtMeshRenderer.material = changedDraughtMat;
 		dirLineObj.transform.position = bestOption.Draught.transform.position;
 		dirLineObj.GetComponent<LineRenderer>().SetPosition(1, bestOption.ForceDir * dirLineMaxLength * (bestOption.ForceValue / draughtMaxForce));
 
 		yield return new WaitForSeconds(1);
+		
+		draughtMeshRenderer.material = changedDraughtMat;
 
 		Debug.Log("FIRE!!");
 		fireDraughtScript.Fire(bestOption.Draught, bestOption.ForceDir, bestOption.ForceValue, this);
@@ -134,6 +145,16 @@ public class AIScript : MonoBehaviour
 		activeDraughtID.Value = bestOption.Draught.GetInstanceID();
 	}
 
+	private void SetRandomOption(List<GameObject> aliveDraughts)
+	{
+		bestOption = new FireOption(
+			aliveDraughts[UnityEngine.Random.Range(0, aliveDraughts.Count - 1)],
+			Vector3.zero,
+			0
+			);
+		activeDraughtID.Value = bestOption.Draught.GetInstanceID();
+	}
+
 	private void GetBestDraughtOptions(GameObject draught)
 	{
 		bestDraughtOptions.Clear();
@@ -142,6 +163,11 @@ public class AIScript : MonoBehaviour
 		{		
 			Vector3 currVec = draughtT.position - draught.transform.position;
 			var currOption = new FireOption(draught, currVec, draughtMaxForce);
+
+			if (!draughtT.GetComponent<DraughtController>().isActive) 
+			{
+				currOption.Rating -= deactivatedTargetPenalty;
+			}
 
 			if (currOption.Rating == bestDraughtOptions[0].Rating) bestDraughtOptions.Add(currOption);
 			else if (currOption.Rating > bestDraughtOptions[0].Rating)
@@ -152,22 +178,21 @@ public class AIScript : MonoBehaviour
 		}
 	}
 
-	public int RateOption(GameObject draught, Vector3 force)
+	private int RateOption(GameObject draught, Vector3 force)
 	{
 		Ray testRay = new Ray(draught.transform.position, force);
 		int hitedNum = Physics.SphereCastNonAlloc(testRay, draughtSize.x, raycastResults, maxRaycastRange, draughtMask);
 
-		uniqueRaycastResults.Clear();
 		for (int i = 0; i < hitedNum; ++i)
 		{
+			// if hited ally draught
 			if (raycastResults[i].collider.gameObject
 				.transform.parent == opponentDraughtsParent) return -100;
-			uniqueRaycastResults.Add(raycastResults[i]);
 		}
 
 		if (hitedNum > 2) return 0;
 		else if (hitedNum == 2) return 100;
-		else if (hitedNum == 1) return 300;
+		else if (hitedNum == 1) return 200;
 		else return 0;
 	}
 
@@ -180,6 +205,7 @@ public class AIScript : MonoBehaviour
 		public int Rating
 		{
 			get { return _rating; }
+			set { _rating = value; }
 		}
 		public static int DefaultRating = -666;
 		public static Func<GameObject, Vector3, int> RateFunc { get; set; }

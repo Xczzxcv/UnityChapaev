@@ -17,7 +17,7 @@ public class InputManagerScript : MonoBehaviour
 	[SerializeField] private GameObject draughtAnchor;
 	[SerializeField] private GameObject dirLineObj;
 	[Space]
-	[SerializeField] private BoolRef isPLayerTurn;
+	[SerializeField] private BoolRef isPlayerTurn;
 	[SerializeField] private BoolRef isMoveDone;
 	[SerializeField] private BoolRef isAIThinking;
 	[Space]
@@ -87,7 +87,7 @@ public class InputManagerScript : MonoBehaviour
 		}
 		else if (Input.GetKey(KeyCode.Escape))
 		{
-			SceneManager.LoadScene(menuSceneName);
+			SceneManager.LoadSceneAsync(menuSceneName);
 		}
 	}
 
@@ -213,8 +213,8 @@ public class InputManagerScript : MonoBehaviour
 
 	private bool IsDraughtAvailableInTurn(GameObject draught)
 	{
-		return (isPLayerTurn.Value && draught.transform.parent.gameObject == playerParent)
-			|| (!isPLayerTurn.Value && draught.transform.parent.gameObject == opponentParent);
+		return (isPlayerTurn.Value && draught.transform.parent.gameObject == playerParent)
+			|| (!isPlayerTurn.Value && draught.transform.parent.gameObject == opponentParent);
 	}
 
 }
