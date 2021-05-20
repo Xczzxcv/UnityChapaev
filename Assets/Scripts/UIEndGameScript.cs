@@ -45,8 +45,7 @@ public class UIEndGameScript : MonoBehaviour
 
 		gametateObj.InitManager();
 		drSpawnerScript.SpawnDraughts();
-
-		yield return new WaitForEndOfFrame();
+		
 		yield return new WaitForEndOfFrame();
 
 		scoreObj.UpdateDraughtsTexts();

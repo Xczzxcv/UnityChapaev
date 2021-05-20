@@ -196,6 +196,7 @@ public class AIScript : MonoBehaviour
 		else return 0;
 	}
 
+	[Serializable]
 	struct FireOption
 	{
 		public GameObject Draught { get; set; }

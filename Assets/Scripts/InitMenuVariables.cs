@@ -5,13 +5,12 @@ using System;
 
 public class InitMenuVariables : MonoBehaviour
 {
-    [SerializeField] private IntVar playMode;
-    [SerializeField] private IntVar playerDraughtsColor;
-
+    [SerializeField] private MenuInit initializer;
+ 
     private void Awake()
     {
-        playMode.SetValue(0);
-        playerDraughtsColor.SetValue(0);
+        initializer.Init();
     }
+
 
 }
