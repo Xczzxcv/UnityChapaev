@@ -2062,7 +2062,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f1ef6842a41a5a4791cfd8aba92d80a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initializer: {fileID: 11400000, guid: ac89daa1a94fa974c9c700260d198aa8, type: 2}
+  initializer: {fileID: 11400000, guid: 5b5417449d91d6f43b58ca1bddf15e6d, type: 2}
+  playMode: {fileID: 11400000, guid: c339832b779ef5d4c9c10e794873ba9a, type: 2}
+  playerDraughtsColor: {fileID: 11400000, guid: 52563b0a6689adf4788a380fd28a5766, type: 2}
 --- !u!4 &929651167
 Transform:
   m_ObjectHideFlags: 0

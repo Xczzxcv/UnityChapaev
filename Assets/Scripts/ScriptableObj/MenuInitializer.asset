@@ -10,7 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 670d774097c48774caa25f6ffaf08fc9, type: 3}
-  m_Name: MenuInitObj
+  m_Name: MenuInitializer
   m_EditorClassIdentifier: 
-  playMode: {fileID: 11400000, guid: c339832b779ef5d4c9c10e794873ba9a, type: 2}
-  playerDraughtsColor: {fileID: 11400000, guid: 52563b0a6689adf4788a380fd28a5766, type: 2}

@@ -6,27 +6,20 @@ using System;
 [CreateAssetMenu]
 public class MenuInit : ScriptableObject
 {
-    [SerializeField] private IntVar playMode;
-    [SerializeField] private IntVar playerDraughtsColor;
-
     private bool isFirstMenuInit;
-
-	private void OnEnable()
+	
+	private void OnDisable()
 	{
-        Debug.Log("enabled");
-        isFirstMenuInit = true;
-    }
+		isFirstMenuInit = true;
+	}
 
-	public void Init()
+	public void Init(IntVar playMode, IntVar playerDraughtsColor)
     {
         Debug.Log($"first time huh? {isFirstMenuInit}");
         if (!isFirstMenuInit) return;
 
-        playMode.SetValue(0);
-        playerDraughtsColor.SetValue(0);
+		playMode.SetValue(0);
+		playerDraughtsColor.SetValue(0);
         isFirstMenuInit = false;
     }
-
-
-
 }
